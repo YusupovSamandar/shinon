@@ -8,6 +8,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import { useDispatch } from 'react-redux';
+import { updateValue } from '@/app/redux/features/patientsList-slice';
+
+
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -49,6 +53,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 export default function TopBar({ openDrawer }) {
+    const dispach = useDispatch();
+    const searchPatient = (e) => {
+        dispach(updateValue(e.target.value));
+    }
+
     return (
         <AppBar position="fixed" color="primary" sx={{ bottom: 'auto' }}>
             <Toolbar>
@@ -61,6 +70,7 @@ export default function TopBar({ openDrawer }) {
                         <SearchIcon />
                     </SearchIconWrapper>
                     <StyledInputBase
+                        onChange={searchPatient}
                         placeholder="Search…"
                         inputProps={{ 'aria-label': 'search' }}
                     />
