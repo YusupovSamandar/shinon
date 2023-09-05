@@ -8,14 +8,15 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import IconButton from '@mui/material/IconButton';
+import Avatar from '@mui/material/Avatar';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Typography from '@mui/material/Typography';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TopBar from "./../topAppBar";
 
 
 export default function SwipeableTemporaryDrawer() {
-  const [state, setState] = React.useState(false);
+  const [state, setState] = React.useState(true);
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -36,12 +37,24 @@ export default function SwipeableTemporaryDrawer() {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
+      <div style={{ marginLeft: '16px' }}>
+        <br />
+        <Avatar sx={{ width: 60, height: 60, margin: "10px 0" }} alt="Samandar" src="/static/images/avatar/2.jpg" />
+        <Typography component="div">
+          Samandar Yusupov
+        </Typography>
+        <Typography sx={{ fontSize: 15 }} color="text.secondary">
+          interpreter
+        </Typography>
+        <br />
+      </div>
+      <Divider />
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+        {['My Account', 'Logout'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {index % 2 === 0 ? <AccountCircleIcon /> : <LogoutIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -49,18 +62,6 @@ export default function SwipeableTemporaryDrawer() {
         ))}
       </List>
       <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </Box>
   );
 
