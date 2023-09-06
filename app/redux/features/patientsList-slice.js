@@ -97,9 +97,9 @@ export const patientsList = createSlice({
     initialState,
     reducers: {
         updateValue: (state, action) => {
-            let currentKey = action.payload;
+            let currentKey = action.payload.toLowerCase();
 
-            state.value = tempDT.filter(pt => pt.name.includes(currentKey));
+            state.value = tempDT.filter(pt => pt.name.toLowerCase().includes(currentKey));
         }
     }
 });
