@@ -67,9 +67,11 @@ export default function BottomAppBar() {
             </React.Fragment>
             <HideOnScroll>
                 <div style={{ position: "fixed", bottom: "50px", zIndex: "9999999", right: "90px" }}>
-                    <StyledFab color="secondary" aria-label="add">
-                        <AddIcon />
-                    </StyledFab>
+                    <Link href={'/add-patient'}>
+                        <StyledFab color="secondary" aria-label="add">
+                            <AddIcon />
+                        </StyledFab>
+                    </Link>
                 </div>
             </HideOnScroll>
         </>

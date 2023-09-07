@@ -11,8 +11,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
-import Image from 'next/image';
+import Link from 'next/link';
 import Stack from "@mui/material/Stack";
 
 function UploadButtons({ receivedImg, setReceivedImg, customID }) {
@@ -61,11 +63,16 @@ export default function AddPatient() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <Link href="/patients">
+                <IconButton aria-label="delete" size="large">
+                    <ArrowBackIcon fontSize="inherit" />
+                </IconButton>
+            </Link>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
+                        marginTop: 0,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',

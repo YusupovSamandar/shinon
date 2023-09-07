@@ -29,7 +29,7 @@ export default function CustomizedInputBase() {
                 onChange={(e) => {
                     setInputText(e.target.value);
                 }}
-                placeholder="Search Google Maps"
+                placeholder="type update..."
                 inputProps={{ 'aria-label': 'search google maps' }}
             />
             <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
