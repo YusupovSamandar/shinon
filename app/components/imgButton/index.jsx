@@ -4,19 +4,10 @@ import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 
-const currentImage = {
-    url: '/static/images/buttons/breakfast.jpg',
-    title: 'Breakfast',
-    width: '40%',
-}
-
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
     position: 'relative',
-    height: 200,
-    [theme.breakpoints.down('sm')]: {
-        width: '100% !important', // Overrides inline-style
-        height: 100,
-    },
+    height: 150,
+    width: '100% !important', // Overrides inline-style
     '&:hover, &.Mui-focusVisible': {
         zIndex: 1,
         '& .MuiImageBackdrop-root': {
@@ -26,7 +17,7 @@ const ImageButton = styled(ButtonBase)(({ theme }) => ({
             opacity: 0,
         },
         '& .MuiTypography-root': {
-            border: '4px solid currentColor',
+            border: '1px solid currentColor',
         },
     },
 }));
@@ -74,18 +65,17 @@ const ImageMarked = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
 
-export default function ButtonBaseDemo() {
+export default function ButtonBaseDemo({ currentImage }) {
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 300, width: '100%' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 150, width: '100%' }}>
 
             <ImageButton
+                component="span"
                 focusRipple
                 key={currentImage.title}
-                style={{
-                    width: currentImage.width,
-                }}
             >
-                <ImageSrc style={{ backgroundImage: `url(${currentImage.url})` }} />
+
+                {currentImage.url && <ImageSrc style={{ backgroundImage: `url(${URL.createObjectURL(currentImage.url)})` }} />}
                 <ImageBackdrop className="MuiImageBackdrop-root" />
                 <Image alt="">
                     <Typography
@@ -94,7 +84,7 @@ export default function ButtonBaseDemo() {
                         color="inherit"
                         sx={{
                             position: 'relative',
-                            p: 4,
+                            p: 2,
                             pt: 2,
                             pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
                         }}

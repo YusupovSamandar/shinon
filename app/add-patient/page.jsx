@@ -15,29 +15,28 @@ import dayjs from 'dayjs';
 import Image from 'next/image';
 import Stack from "@mui/material/Stack";
 
-function UploadButtons() {
-    const [imageUrl, setImageUrl] = React.useState(null);
+function UploadButtons({ receivedImg, setReceivedImg, customID }) {
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
-        setImageUrl(file);
+        setReceivedImg(file);
     };
 
     return (
         <Stack direction="row" alignItems="center" spacing={2}>
-            <label htmlFor="upload-image">
-                <Button variant="contained" component="span">
-                    Upload
-                </Button>
+            <label htmlFor={customID}>
+                <ImgButton currentImage={{
+                    url: receivedImg,
+                    title: receivedImg ? 'changeImage' : 'select image',
+                }} />
                 <input
-                    id="upload-image"
+                    id={customID}
                     hidden
                     accept="image/*"
                     type="file"
                     onChange={handleFileUpload}
                 />
             </label>
-            {imageUrl && <Image src={URL.createObjectURL(imageUrl)} width={100} alt="Uploaded Image" height="100" />}
         </Stack>
     );
 }
@@ -46,8 +45,10 @@ function UploadButtons() {
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function AddPatient() {
     const [visaExpireDate, setVisaExpireDateValue] = React.useState(dayjs('2022-04-17'));
+    const [imageUrl, setImageUrl] = React.useState(null);
+    const [passportImg, setPassportImg] = React.useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -74,7 +75,7 @@ export default function SignIn() {
                         <PersonAddIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Add New Patient
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -100,22 +101,18 @@ export default function SignIn() {
                             value={visaExpireDate}
                             onChange={(newValue) => setVisaExpireDateValue(newValue)}
                         />
-                        <p>
-                            Patient Image:
-                        </p>
-                        {/* <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        /> */}
-                        <ImgButton />
-                        <UploadButtons />
+                        <p>Patient Image:</p>
+                        <UploadButtons receivedImg={imageUrl} setReceivedImg={setImageUrl} customID={"patient-upload"} />
+                        <br />
+                        <p>Passport Image:</p>
+                        <UploadButtons receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Confirm
                         </Button>
                     </Box>
                 </Box>
