@@ -13,10 +13,12 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TopBar from "./../topAppBar";
-
+import { useRouter } from 'next/navigation'
 
 export default function SwipeableTemporaryDrawer() {
   const [state, setState] = React.useState(false);
+  const router = useRouter()
+
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -52,7 +54,9 @@ export default function SwipeableTemporaryDrawer() {
       <List>
         {['My Account', 'Logout'].map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => {
+              router.push(index % 2 === 0 ? '/patients' : '/login')
+            }}>
               <ListItemIcon>
                 {index % 2 === 0 ? <AccountCircleIcon /> : <LogoutIcon />}
               </ListItemIcon>

@@ -60,7 +60,7 @@ export default function CurrentPatient({ params }) {
                 <br />
             </div>
             <Divider />
-            <Tabs config={{ content1: { label: "tab1", value: <UpdatesOnPatient /> }, content2: { label: "tab2", value: "val2" } }} />
+            <Tabs config={{ content1: { label: "Updates", value: <UpdatesOnPatient /> }, content2: { label: "Analysis", value: "val2" } }} />
 
             <MgsBar />
         </div>
