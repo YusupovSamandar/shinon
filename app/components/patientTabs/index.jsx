@@ -19,7 +19,7 @@ function CustomTabPanel(props) {
         >
             {value === index && (
                 <Box sx={{ p: 3 }}>
-                    <Typography>{children}</Typography>
+                    {children}
                 </Box>
             )}
         </div>
@@ -49,7 +49,12 @@ export default function BasicTabs({ config: { content1, content2 } }) {
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                    variant="fullWidth"
+                >
                     <Tab label={content1.label} {...a11yProps(0)} />
                     <Tab label={content2.label} {...a11yProps(1)} />
                 </Tabs>

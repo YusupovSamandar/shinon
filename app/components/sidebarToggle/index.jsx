@@ -16,7 +16,7 @@ import TopBar from "./../topAppBar";
 
 
 export default function SwipeableTemporaryDrawer() {
-  const [state, setState] = React.useState(true);
+  const [state, setState] = React.useState(false);
 
   const toggleDrawer = (open) => (event) => {
     if (
