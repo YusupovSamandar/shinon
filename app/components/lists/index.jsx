@@ -14,7 +14,7 @@ const SecondaryContent = ({ leftContent, rightContent }) => {
 
 export default function FolderList({ primary, time, editor }) {
     return (
-        <List sx={{ width: '100%', maxWidth: 360, backgroundColor: "#F7F7F7", padding: 0 }}>
+        <List sx={{ width: '100%', backgroundColor: "#F7F7F7", padding: 0 }}>
             <ListItem>
                 <ListItemText sx={{ color: 'rgba(0, 0, 0, 0.87)' }} primary={primary} />
             </ListItem>

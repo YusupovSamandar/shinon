@@ -13,7 +13,6 @@ const Item = styled(Paper)(({ theme }) => ({
     width: '100%'
 }));
 
-const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 export default function Elevation({ primary, time, editor }) {
     return (

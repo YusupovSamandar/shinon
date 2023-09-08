@@ -11,9 +11,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Typography from '@mui/material/Typography';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import GroupIcon from '@mui/icons-material/Group';
 import TopBar from "./../topAppBar";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import SickIcon from '@mui/icons-material/Sick';
 
 export default function SwipeableTemporaryDrawer() {
   const [state, setState] = React.useState(false);
@@ -52,13 +53,13 @@ export default function SwipeableTemporaryDrawer() {
       </div>
       <Divider />
       <List>
-        {['My Account', 'Logout'].map((text, index) => (
+        {['Patients', 'Users', "Logout"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() => {
-              router.push(index % 2 === 0 ? '/patients' : '/login')
+              router.push(index === 0 ? '/patients' : index === 1 ? '/users' : '/login')
             }}>
               <ListItemIcon>
-                {index % 2 === 0 ? <AccountCircleIcon /> : <LogoutIcon />}
+                {index === 0 ? <SickIcon /> : index === 1 ? <GroupIcon /> : <LogoutIcon />}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>

@@ -11,7 +11,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MgsBar from '@/app/components/sendMessageBar'
+import MgsBar from '@/app/components/sendMessageBar';
+import ExpandPanel from '@/app/components/expandPanel'
+import PreWorkup from "@/app/components/analysisContent/pre-workup";
+
 
 
 const UpdatesOnPatient = () => {
@@ -31,6 +34,62 @@ const UpdatesOnPatient = () => {
             </div>
         </div>
     )
+}
+
+const PatientAnalysis = () => {
+
+    const [preWorkup, setPreWorkup] = React.useState({
+        complete: false,
+        details: [
+            {
+                analysisName: "Blood test",
+                done: false
+            },
+            {
+                analysisName: "HBV DNA Quantitive",
+                done: false
+            },
+            {
+                analysisName: "Hepatisis B Core antibodies",
+                done: false
+            },
+            {
+                analysisName: "CT scan",
+                done: false
+            },
+            {
+                analysisName: "Calcium scoring",
+                done: false
+            },
+            {
+                analysisName: "USG pelvis",
+                done: false
+            },
+            {
+                analysisName: "USG abdomen",
+                done: false
+            }
+        ]
+    });
+
+    return (
+        <div>
+            <ExpandPanel
+                groupItem1={{
+                    label: "Pre-Workup Tests",
+                    content: <PreWorkup checksData={preWorkup} setChecksData={setPreWorkup} />,
+                    disableAccortion: preWorkup.complete,
+                    setCurrentStatus: setPreWorkup
+                }}
+                groupItem2={{ label: "Surgery", content: <div>hello</div> }}
+                groupItem3={{ label: "Post Surgery", content: <div>hello</div> }}
+            />
+            <br />
+            <div style={{ textAlign: "right" }}>
+                <Button variant="contained">Save Changes</Button>
+            </div>
+        </div>
+    );
 }
 
 export default function CurrentPatient({ params }) {
@@ -60,7 +119,10 @@ export default function CurrentPatient({ params }) {
                 <br />
             </div>
             <Divider />
-            <Tabs config={{ content1: { label: "Updates", value: <UpdatesOnPatient /> }, content2: { label: "Analysis", value: "val2" } }} />
+            <Tabs config={{
+                content1: { label: "Updates", value: <UpdatesOnPatient /> },
+                content2: { label: "Analysis", value: <PatientAnalysis /> }
+            }} />
 
             <MgsBar />
         </div>
