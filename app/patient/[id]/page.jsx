@@ -14,7 +14,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MgsBar from '@/app/components/sendMessageBar';
 import ExpandPanel from '@/app/components/expandPanel'
 import PreWorkup from "@/app/components/analysisContent/pre-workup";
-
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 
 const UpdatesOnPatient = () => {
@@ -98,7 +98,7 @@ export default function CurrentPatient({ params }) {
         <div>
             <div style={{ marginLeft: '16px' }}>
                 <br />
-                <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
                     <Link href="/patients">
                         <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
                             <ArrowBackIcon fontSize="inherit" />
@@ -110,6 +110,11 @@ export default function CurrentPatient({ params }) {
                             Samandar Yusupov
                         </Typography>
                     </div>
+                    <Link href={`/patient/edit/${patientID}`}>
+                        <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
+                            <ManageAccountsIcon fontSize="inherit" />
+                        </IconButton>
+                    </Link>
                 </div>
 
                 <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">

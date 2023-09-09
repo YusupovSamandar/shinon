@@ -52,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         },
     },
 }));
-export default function TopBar({ openDrawer }) {
+export default function TopBar({ openDrawer, toggleSearch }) {
     const dispach = useDispatch();
     const searchPatient = (e) => {
         dispach(updateValue(e.target.value));
@@ -65,16 +65,19 @@ export default function TopBar({ openDrawer }) {
                     <MenuIcon />
                 </IconButton>
                 <Box sx={{ flexGrow: 1 }} />
-                <Search>
-                    <SearchIconWrapper>
-                        <SearchIcon />
-                    </SearchIconWrapper>
-                    <StyledInputBase
-                        onChange={searchPatient}
-                        placeholder="Search…"
-                        inputProps={{ 'aria-label': 'search' }}
-                    />
-                </Search>
+                {
+                    toggleSearch && <Search>
+                        <SearchIconWrapper>
+                            <SearchIcon />
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            onChange={searchPatient}
+                            placeholder="Search…"
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </Search>
+                }
+
             </Toolbar>
         </AppBar>
     )

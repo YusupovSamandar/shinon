@@ -16,7 +16,7 @@ import TopBar from "./../topAppBar";
 import { useRouter } from 'next/navigation';
 import SickIcon from '@mui/icons-material/Sick';
 
-export default function SwipeableTemporaryDrawer() {
+export default function SwipeableTemporaryDrawer({ enableSearch }) {
   const [state, setState] = React.useState(false);
   const router = useRouter()
 
@@ -74,7 +74,7 @@ export default function SwipeableTemporaryDrawer() {
     <div>
       <React.Fragment>
 
-        <TopBar openDrawer={toggleDrawer(true)} />
+        <TopBar toggleSearch={enableSearch} openDrawer={toggleDrawer(true)} />
 
         <SwipeableDrawer
           anchor={'left'}
