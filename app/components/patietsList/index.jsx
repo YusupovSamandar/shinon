@@ -12,7 +12,8 @@ import useScrollTrigger from '@mui/material/useScrollTrigger';
 import AddIcon from '@mui/icons-material/Add';
 import ProgressIndicator from "./../progressBar"
 import Link from 'next/link';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import { updateValue } from '@/app/redux/features/patientsList-slice';
 
 
 function HideOnScroll(props) {
@@ -43,6 +44,11 @@ const StyledFab = styled(Fab)({
 });
 
 export default function BottomAppBar() {
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+        dispatch(updateValue(''));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const patientsList = useSelector((state) => state.patientsList.value)
 
@@ -52,7 +58,7 @@ export default function BottomAppBar() {
                 <CssBaseline />
                 <Paper square sx={{ pb: '50px' }}>
                     <List sx={{ mb: 2 }}>
-                        {patientsList.map(({ id, name, secondary, progressNumber }) => (
+                        {(patientsList && patientsList.length > 1) ? patientsList.map(({ id, name, secondary, progressNumber }) => (
                             <Link key={id} href={`/patient/${id}`}>
                                 <React.Fragment >
                                     <ListItem style={{ padding: '0px 10px', alignItems: "center" }} button>
@@ -61,7 +67,7 @@ export default function BottomAppBar() {
                                     </ListItem>
                                 </React.Fragment>
                             </Link>
-                        ))}
+                        )) : <p style={{ textAlign: "center" }}>No Patients Found</p>}
                     </List>
                 </Paper>
             </React.Fragment>
