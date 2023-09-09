@@ -48,7 +48,10 @@ function UploadButtons({ receivedImg, setReceivedImg, customID }) {
 
 const defaultTheme = createTheme();
 
-export default function AddPatient() {
+export default function EditPatient({ params }) {
+
+    const patientID = params.id;
+
     const [visaExpireDate, setVisaExpireDateValue] = React.useState(dayjs('2022-04-17'));
     const [imageUrl, setImageUrl] = React.useState(null);
     const [passportImg, setPassportImg] = React.useState(null);
@@ -64,7 +67,7 @@ export default function AddPatient() {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Link href="/patients">
+            <Link href={"/patient/" + patientID}>
                 <IconButton aria-label="delete" size="large">
                     <ArrowBackIcon fontSize="inherit" />
                 </IconButton>
