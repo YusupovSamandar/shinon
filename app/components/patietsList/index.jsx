@@ -56,7 +56,7 @@ export default function BottomAppBar() {
         <>
             <React.Fragment>
                 <CssBaseline />
-                <Paper square sx={{ pb: '50px' }}>
+                <Paper square >
                     <List sx={{ mb: 2 }}>
                         {(patientsList && patientsList.length > 1) ? patientsList.map(({ id, name, secondary, progressNumber }) => (
                             <Link key={id} href={`/patient/${id}`}>
@@ -72,7 +72,7 @@ export default function BottomAppBar() {
                 </Paper>
             </React.Fragment>
             <HideOnScroll>
-                <div style={{ position: "fixed", bottom: "50px", zIndex: "9999999", right: "90px" }}>
+                <div style={{ position: "fixed", bottom: "100px", zIndex: "9999999", right: "90px" }}>
                     <Link href={'/add-patient'}>
                         <StyledFab color="secondary" aria-label="add">
                             <AddIcon />
