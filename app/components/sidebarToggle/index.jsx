@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import GroupIcon from '@mui/icons-material/Group';
 import TopBar from "./../topAppBar";
 import { useRouter } from 'next/navigation';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import SickIcon from '@mui/icons-material/Sick';
 
 export default function SwipeableTemporaryDrawer({ enableSearch }) {
@@ -53,18 +54,24 @@ export default function SwipeableTemporaryDrawer({ enableSearch }) {
       </div>
       <Divider />
       <List>
-        {['Patients', 'Users', "Logout"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={() => {
-              router.push(index === 0 ? '/patients' : index === 1 ? '/users' : '/login')
-            }}>
-              <ListItemIcon>
-                {index === 0 ? <SickIcon /> : index === 1 ? <GroupIcon /> : <LogoutIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {
+          [
+            { label: 'Patients', goto: '/patients', icon: <SickIcon /> },
+            { label: 'Report', goto: '/report', icon: <SummarizeIcon /> },
+            { label: 'Users', goto: '/users', icon: <GroupIcon /> },
+            { label: 'Logout', goto: '/login', icon: <LogoutIcon /> }
+          ].map((text, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton onClick={() => {
+                router.push(text.goto);
+              }}>
+                <ListItemIcon>
+                  {text.icon}
+                </ListItemIcon>
+                <ListItemText primary={text.label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
       </List>
       <Divider />
     </Box>

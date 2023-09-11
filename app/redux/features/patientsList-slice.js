@@ -4,25 +4,25 @@ const tempDT = [
     {
         id: 1,
         name: 'Samandar Yusupov',
-        secondary: "Post surgery",
+        secondary: "Post Surgery",
         progressNumber: 20
     },
     {
         id: 2,
         name: 'Abdurashid Abdullayev',
-        secondary: `Pre-surgery`,
+        secondary: `Pre-Work up`,
         progressNumber: 30
     },
     {
         id: 3,
         name: 'Bekzod Jumayev',
-        secondary: 'Post tx follow up',
+        secondary: 'Post tx follow up updates',
         progressNumber: 90
     },
     {
         id: 4,
         name: 'Sayyara Aliboyeva',
-        secondary: 'Pre-Work Up',
+        secondary: 'Pre-Work up',
         progressNumber: 0
     },
     {
@@ -40,25 +40,25 @@ const tempDT = [
     {
         id: 7,
         name: 'Azamat Yadgarov',
-        secondary: `Post tx follow up`,
+        secondary: `Post tx follow up updates`,
         progressNumber: 78
     },
     {
         id: 8,
         name: 'Samandar Yusupov',
-        secondary: "Post surgery",
+        secondary: "Post Surgery",
         progressNumber: 53
     },
     {
         id: 9,
         name: 'Abdurashid Abdullayev',
-        secondary: `Pre-surgery`,
+        secondary: `Pre-Work up`,
         progressNumber: 31
     },
     {
         id: 10,
         name: 'Bekzod Jumayev',
-        secondary: 'Post tx follow up',
+        secondary: 'Post tx follow up updates',
         progressNumber: 10
     },
     {
@@ -83,7 +83,7 @@ const tempDT = [
     {
         id: 14,
         name: 'Azamat Yadgarov',
-        secondary: `Post tx follow up`,
+        secondary: `Post tx follow up updates`,
         progressNumber: 60
     }
 ];
@@ -100,9 +100,13 @@ export const patientsList = createSlice({
             let currentKey = action.payload.toLowerCase();
 
             state.value = tempDT.filter(pt => pt.name.toLowerCase().includes(currentKey));
+        },
+        updateByStatus: (state, action) => {
+            const filterState = action.payload
+            state.value = tempDT.filter((pt) => pt.secondary === filterState);
         }
     }
 });
 
-export const { updateValue } = patientsList.actions
+export const { updateValue, updateByStatus } = patientsList.actions
 export default patientsList.reducer;

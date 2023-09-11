@@ -14,6 +14,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MgsBar from '@/app/components/sendMessageBar';
 import ExpandPanel from '@/app/components/expandPanel'
 import PreWorkup from "@/app/components/analysisContent/pre-workup";
+import PatientStepper from "@/app/components/stepper";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 
@@ -111,16 +112,17 @@ export default function CurrentPatient({ params }) {
                         </Typography>
                     </div>
                     <Link href={`/patient/edit/${patientID}`}>
-                        <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
+                        <IconButton style={{ position: 'relative', right: '10px', paddingLeft: "30px" }} aria-label="delete" size="large">
                             <ManageAccountsIcon fontSize="inherit" />
                         </IconButton>
                     </Link>
                 </div>
-
+                <br />
+                <PatientStepper activeStepNumber={1} />
+                {/* <br /> */}
                 <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
                     Status: <b>Surgery</b>
                 </Typography>
-                <CustomProgressBar progress={20} />
                 <br />
             </div>
             <Divider />
