@@ -16,17 +16,16 @@ export default function AlignItemsList({ reportList }) {
         ...theme.typography.body2,
         textAlign: 'center',
         color: theme.palette.text.secondary,
-        height: 60,
         lineHeight: '60px',
     }));
 
 
 
     return (
-        <Item elevation={12}>
+        <Item elevation={0}>
             <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
                 {reportList.map((report, indx) => (
-                    <div key={indx} >
+                    <div key={indx}>
                         <ListItem alignItems="flex-start">
                             <div>
                                 <React.Fragment>
@@ -42,7 +41,7 @@ export default function AlignItemsList({ reportList }) {
                                             </span>
                                         </Typography>
                                     </div>
-                                    <Typography style={{ display: "flex", alignItems: "center", gap: "10px" }} gutterBottom>
+                                    <Typography component={'div'} style={{ display: "flex", alignItems: "center", gap: "10px" }} gutterBottom>
                                         <div style={{ backgroundColor: "#333", width: "10px", height: "1px" }}></div>
                                         <p style={{ fontSize: "0.8rem" }}><i>{report.reporter}</i></p>
                                     </Typography>
