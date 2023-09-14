@@ -62,7 +62,7 @@ export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem
                                 checked={groupItem1.disableAccortion}
                                 onChange={() => {
                                     groupItem1.setCurrentStatus((prev) => {
-                                        return { ...prev, complete: !prev.complete }
+                                        return { ...prev, preWorkup: { ...prev.preWorkup, complete: !prev.preWorkup.complete } }
                                     })
                                 }}
                                 inputProps={{ 'aria-label': 'controlled' }}

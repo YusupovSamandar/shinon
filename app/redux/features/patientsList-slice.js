@@ -1,96 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { API_URL } from "@/app/apiConfig";
 
-const tempDT = [
-    {
-        id: 1,
-        name: 'Samandar Yusupov',
-        secondary: "Post Surgery",
-        progressNumber: 20
-    },
-    {
-        id: 2,
-        name: 'Abdurashid Abdullayev',
-        secondary: `Pre-Work up`,
-        progressNumber: 30
-    },
-    {
-        id: 3,
-        name: 'Bekzod Jumayev',
-        secondary: 'Post tx follow up updates',
-        progressNumber: 90
-    },
-    {
-        id: 4,
-        name: 'Sayyara Aliboyeva',
-        secondary: 'Pre-Work up',
-        progressNumber: 0
-    },
-    {
-        id: 5,
-        name: "Zamira Rasulova",
-        secondary: 'Post Surgery',
-        progressNumber: 16
-    },
-    {
-        id: 6,
-        name: 'Yokubjon Kadirov',
-        secondary: 'Surgery',
-        progressNumber: 48
-    },
-    {
-        id: 7,
-        name: 'Azamat Yadgarov',
-        secondary: `Post tx follow up updates`,
-        progressNumber: 78
-    },
-    {
-        id: 8,
-        name: 'Samandar Yusupov',
-        secondary: "Post Surgery",
-        progressNumber: 53
-    },
-    {
-        id: 9,
-        name: 'Abdurashid Abdullayev',
-        secondary: `Pre-Work up`,
-        progressNumber: 31
-    },
-    {
-        id: 10,
-        name: 'Bekzod Jumayev',
-        secondary: 'Post tx follow up updates',
-        progressNumber: 10
-    },
-    {
-        id: 11,
-        name: 'Sayyara Aliboyeva',
-        secondary: 'Pre-Work Up',
-        progressNumber: 100
-
-    },
-    {
-        id: 12,
-        name: "Zamira Rasulova",
-        secondary: 'Post Surgery',
-        progressNumber: 50
-    },
-    {
-        id: 13,
-        name: 'Yokubjon Kadirov',
-        secondary: 'Surgery',
-        progressNumber: 5
-    },
-    {
-        id: 14,
-        name: 'Azamat Yadgarov',
-        secondary: `Post tx follow up updates`,
-        progressNumber: 60
-    }
-];
+let allPTS = [];
 
 const initialState = {
-    value: tempDT
+    value: allPTS
 }
+
 
 export const patientsList = createSlice({
     name: "patientsList",
@@ -99,14 +16,27 @@ export const patientsList = createSlice({
         updateValue: (state, action) => {
             let currentKey = action.payload.toLowerCase();
 
-            state.value = tempDT.filter(pt => pt.name.toLowerCase().includes(currentKey));
+            state.value = allPTS.filter(pt => pt.fullName.toLowerCase().includes(currentKey) || pt.nameOfDonor.toLowerCase().includes(currentKey));
         },
         updateByStatus: (state, action) => {
             const filterState = action.payload
-            state.value = tempDT.filter((pt) => pt.secondary === filterState);
+            state.value = allPTS.filter((pt) => pt.currentStatus === filterState);
+        },
+        updatePatientsList: (state, action) => {
+            state.value = action.payload
+            // return tempDT
         }
     }
 });
 
-export const { updateValue, updateByStatus } = patientsList.actions
+
+export const fetchPatients = () => async (dispatch) => {
+    const { data } = await axios.get(`${API_URL}/api/patients`);
+    // console.log(data);
+    allPTS = data
+    // console.log(data);
+    dispatch(patientsList.actions.updatePatientsList(data));
+}
+
+export const { updateValue, updateByStatus, updatePatientsList } = patientsList.actions
 export default patientsList.reducer;

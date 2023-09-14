@@ -3,20 +3,20 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 
-export default function PreWorkup({ checksData, setChecksData }) {
+export default function PreWorkup({ checksData, setChecksData, checksSection }) {
     return (
         <div>
-            {checksData.details.map((analysis, indx) => (
+            {checksData[checksSection].details.map((analysis, indx) => (
                 <FormControlLabel
                     style={{ display: "block" }}
                     key={indx}
                     control={
                         <Checkbox
-                            disabled={checksData.complete}
+                            disabled={checksData[checksSection].complete}
                             checked={analysis.done}
                             onChange={() => {
                                 setChecksData((prev) => {
-                                    const newCheckState = prev.details.map((detail, detailIndx) => {
+                                    const newCheckState = prev[checksSection].details.map((detail, detailIndx) => {
                                         if (detailIndx !== indx) {
                                             return detail
                                         } else {
@@ -27,15 +27,18 @@ export default function PreWorkup({ checksData, setChecksData }) {
                                         }
                                     });
                                     return {
-                                        complete: prev.complete,
-                                        details: newCheckState
+                                        ...prev,
+                                        [checksSection]: {
+                                            complete: prev[checksSection].complete,
+                                            details: newCheckState
+                                        }
                                     }
                                 });
                             }}
                             inputProps={{ 'aria-label': 'controlled' }}
                         />
                     }
-                    label={analysis.analysisName}
+                    label={analysis.analysis}
                 />
             ))}
         </div>

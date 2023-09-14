@@ -38,18 +38,18 @@ function a11yProps(index) {
     };
 }
 
-export default function BasicTabs({ config: { content1, content2 } }) {
-    const [value, setValue] = React.useState(0);
+export default function BasicTabs({ config: { content1, content2 }, currentTab, setCurrentTab }) {
+
 
     const handleChange = (event, newValue) => {
-        setValue(newValue);
+        setCurrentTab(newValue);
     };
 
     return (
         <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs
-                    value={value}
+                    value={currentTab}
                     onChange={handleChange}
                     aria-label="basic tabs example"
                     variant="fullWidth"
@@ -58,10 +58,10 @@ export default function BasicTabs({ config: { content1, content2 } }) {
                     <Tab label={content2.label} {...a11yProps(1)} />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel value={currentTab} index={0}>
                 {content1.value}
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel value={currentTab} index={1}>
                 {content2.value}
             </CustomTabPanel>
         </Box>

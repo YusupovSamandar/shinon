@@ -4,24 +4,44 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
-
-
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import axios from 'axios';
+import { API_URL } from '@/app/apiConfig';
+import { useDispatch } from 'react-redux';
+import { saveNewData } from '@/app/redux/features/users-slice';
+import { fetchAllUsers } from '@/app/redux/features/users-slice';
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function AddUser({ setCurrentTab }) {
+    const dispatch = useDispatch();
+    const [newUser, setNewUser] = React.useState({ login: '', password: '' });
+    const [userRole, setUserRole] = React.useState('viewer');
+
+    const saveNewUser = async () => {
+        const response = await axios.post(`${API_URL}/api/users`, { ...newUser, role: userRole });
+        if (response.status === 200) {
+            dispatch(fetchAllUsers());
+            setCurrentTab(0);
+
+        } else if (response.status === 400) {
+            alert('This User Already Exists');
+        } else {
+            alert('error saving user');
+        }
+
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('fullName'),
-            password: data.get('password'),
-        });
+
+        saveNewUser();
     };
 
     return (
@@ -47,20 +67,60 @@ export default function SignIn() {
                             margin="normal"
                             required
                             fullWidth
-                            id="fullName"
-                            label="full-Name"
-                            name="fullName"
+                            value={newUser.login}
+                            onChange={(e) => {
+                                setNewUser((prev) => {
+                                    return { ...prev, login: e.target.value };
+                                })
+                            }}
+                            inputProps={{
+                                form: {
+                                    autoComplete: 'off',
+                                }
+                            }}
+                            id="login"
+                            label="New User Login"
+                            name="login"
                             autoFocus
                         />
                         <TextField
                             margin="normal"
                             required
+                            value={newUser.password}
+                            onChange={(e) => {
+                                setNewUser((prev) => {
+                                    return { ...prev, password: e.target.value };
+                                })
+                            }}
+                            inputProps={{
+                                autoComplete: 'new-password',
+                                form: {
+                                    autoComplete: 'off',
+                                }
+                            }}
                             fullWidth
                             name="password"
                             label="Password"
                             type="password"
                             id="password"
                         />
+
+                        <InputLabel id="demo-simple-select-label">role</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={userRole}
+                            label="Age"
+                            onChange={(event) => {
+                                setUserRole(event.target.value)
+                            }}
+                        >
+                            <MenuItem value={'viewer'}>viewer</MenuItem>
+                            <MenuItem value={'interpreter'}>interpreter</MenuItem>
+                            <MenuItem value={'admin'}>admin</MenuItem>
+                            <MenuItem value={'developer'}>developer</MenuItem>
+                        </Select>
+
                         <Button
                             type="submit"
                             fullWidth

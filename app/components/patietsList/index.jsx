@@ -58,16 +58,23 @@ export default function BottomAppBar() {
                 <CssBaseline />
                 <Paper square >
                     <List sx={{ mb: 2 }}>
-                        {(patientsList && patientsList.length > 1) ? patientsList.map(({ id, name, secondary, progressNumber }) => (
-                            <Link key={id} href={`/patient/${id}`}>
-                                <React.Fragment >
-                                    <ListItem style={{ padding: '0px 10px', alignItems: "center" }} button>
-                                        <ProgressIndicator progress={progressNumber} />
-                                        <ListItemText style={{ borderBottom: "1px solid #eee", margin: 0, padding: "15px 0" }} primary={name} secondary={secondary} />
-                                    </ListItem>
-                                </React.Fragment>
-                            </Link>
-                        )) : <p style={{ textAlign: "center" }}>No Patients Found</p>}
+                        {(patientsList && patientsList.length > 0) ? patientsList.map((currPatient, indx) => {
+                            const progressNumber = currPatient.currentStatus === 'Pre-Work up'
+                                ? 0 : currPatient.currentStatus === 'Surgery'
+                                    ? 25 : currPatient.currentStatus === 'Post Surgery'
+                                        ? 50 : currPatient.currentStatus === 'Post tx follow up updates'
+                                            ? 75 : 100
+                            return (
+                                <Link key={indx} href={`/patient/${currPatient._id}`}>
+                                    <React.Fragment >
+                                        <ListItem style={{ padding: '0px 10px', alignItems: "center" }} button>
+                                            <ProgressIndicator progress={progressNumber} />
+                                            <ListItemText style={{ borderBottom: "1px solid #eee", margin: 0, padding: "15px 0" }} primary={currPatient.fullName} secondary={currPatient.currentStatus} />
+                                        </ListItem>
+                                    </React.Fragment>
+                                </Link>
+                            )
+                        }) : <p style={{ textAlign: "center" }}>No Patients Found</p>}
                     </List>
                 </Paper>
             </React.Fragment>
