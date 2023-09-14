@@ -7,5 +7,8 @@ export const store = configureStore({
         patientsList: patientsListReducer,
         usersList: usersListReducer,
         warningMessagesList: warningMessagesListReducer
-    }
+    },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+    }),
 });

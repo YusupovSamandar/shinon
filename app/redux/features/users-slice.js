@@ -1,27 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const users_data = [
-    {
-        fullName: 'sdfsc',
-        password: 'xcv sdf sd'
-    },
-    {
-        fullName: 'Murray',
-        password: 'sam'
-    },
-    {
-        fullName: 'Kentucky',
-        password: 'sam'
-    },
-    {
-        fullName: 'Branson',
-        password: 'Daphne'
-    },
-    {
-        fullName: 'Branson',
-        password: 'sam'
-    },
-];
+import axios from "axios";
+import { API_URL } from "@/app/apiConfig";
+let users_data = [];
 
 const initialState = {
     value: users_data
@@ -36,6 +16,14 @@ export const patientsList = createSlice({
         }
     }
 });
+
+export const fetchAllUsers = () => async (dispatch) => {
+    const { data } = await axios.get(`${API_URL}/api/users`);
+    // console.log(data);
+    users_data = data
+    // console.log(data);
+    dispatch(patientsList.actions.saveNewData(data));
+}
 
 export const { saveNewData } = patientsList.actions
 export default patientsList.reducer;
