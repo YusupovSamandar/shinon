@@ -4,9 +4,11 @@ import { MaterialReactTable } from 'material-react-table';
 import { Box, IconButton } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
+import axios from '@/app/axiosInstance';
+import { API_URL } from '@/app/apiConfig';
 
 
-export const Example = ({ headers, data, setNewData }) => {
+export const Example = ({ headers, data, setNewData, role, hide }) => {
     const dispach = useDispatch();
 
     const columns = useMemo(
@@ -18,9 +20,13 @@ export const Example = ({ headers, data, setNewData }) => {
     );
 
     const handleSaveRow = async ({ exitEditingMode, row, values }) => {
+
+        const edittingUserID = data[row.index]._id;
+        const { data: edittedUser } = await axios.put(`${API_URL}/api/users/${edittingUserID}`, values);
+
         //if using flat data and simple accessorKeys/ids, you can just do a simple assignment here.
         let tempCloneData = [...data];
-        tempCloneData[row.index] = values;
+        tempCloneData[row.index] = edittedUser;
         //send/receive api updates here
         dispach(setNewData([...tempCloneData]));
         exitEditingMode(); //required to exit editing mode
@@ -31,6 +37,9 @@ export const Example = ({ headers, data, setNewData }) => {
             columns={columns}
             data={data}
             enableRowActions
+            initialState={{
+                columnVisibility: { [hide]: false }
+            }}
             renderRowActions={({ row, table }) => (
                 <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                     <IconButton
@@ -50,8 +59,13 @@ export const Example = ({ headers, data, setNewData }) => {
                                 return;
                             }
                             let tempCloneData = [...data];
-                            tempCloneData.splice(row.index, 1); //assuming simple data table
-                            dispach(setNewData([...tempCloneData]))
+                            (async function () {
+                                const deleteResponse = await axios.delete(`${API_URL}/api/users/${data[row.index]._id}`);
+                                if (deleteResponse.status === 200) {
+                                    tempCloneData.splice(row.index, 1); //assuming simple data table
+                                    dispach(setNewData([...tempCloneData]))
+                                }
+                            })()
                         }}
                     >
                         <DeleteIcon />

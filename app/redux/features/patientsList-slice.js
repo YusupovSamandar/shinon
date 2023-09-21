@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from '@/app/axiosInstance';
 import { API_URL } from "@/app/apiConfig";
 
 let allPTS = [];
@@ -30,11 +30,10 @@ export const patientsList = createSlice({
 });
 
 
+
 export const fetchPatients = () => async (dispatch) => {
     const { data } = await axios.get(`${API_URL}/api/patients`);
-    // console.log(data);
     allPTS = data
-    // console.log(data);
     dispatch(patientsList.actions.updatePatientsList(data));
 }
 

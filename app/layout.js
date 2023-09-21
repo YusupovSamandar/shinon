@@ -1,10 +1,11 @@
 "use client"
 import './globals.css';
-import { Inter } from 'next/font/google'
+import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 import { ReduxProvider } from './redux/provider';
 import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
 
 export const metadata = {
   title: 'Create Next App',

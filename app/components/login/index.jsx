@@ -12,6 +12,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { API_URL } from '@/app/apiConfig';
+import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { updateState } from '@/app/redux/features/auth-slice';
+
+
 
 function Copyright(props) {
     return (
@@ -31,13 +39,34 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignIn() {
+    const dispatch = useDispatch();
+
+    const router = useRouter();
+
+    const [error, setError] = React.useState(false);
+    const [rememberMe, setRememberMe] = React.useState(false)
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        (async function () {
+            try {
+                const foundUser = await axios.post(`${API_URL}/api/users/login`, {
+                    login: data.get('login'),
+                    password: data.get('password'),
+                    rememberMe
+                }, {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                });
+                dispatch(updateState({ value: foundUser.data.user, isAuth: true }));
+                localStorage.setItem('currentUserID', foundUser.data.user._id)
+                router.push('/patients');
+            } catch (error) {
+                console.log(error);
+                setError(true)
+            }
+        })();
     };
 
     return (
@@ -58,15 +87,17 @@ export default function SignIn() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
+                    {error && <Alert severity="error">Wrong login or password!</Alert>}
+
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="email"
-                            label="Username"
-                            name="email"
-                            autoComplete="email"
+                            id="login"
+                            label="Login"
+                            name="login"
+                            autoComplete="login"
                             autoFocus
                         />
                         <TextField
@@ -80,7 +111,16 @@ export default function SignIn() {
                             autoComplete="current-password"
                         />
                         <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
+                            control={
+                                <Checkbox
+                                    value="remember"
+                                    color="primary"
+                                    checked={rememberMe}
+                                    onChange={(e) => {
+                                        setRememberMe(e.target.checked);
+                                    }}
+                                />
+                            }
                             label="Remember me"
                         />
                         <Button

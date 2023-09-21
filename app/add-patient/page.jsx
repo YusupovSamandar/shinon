@@ -16,8 +16,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import Stack from "@mui/material/Stack";
-import axios from 'axios';
+import axios from '@/app/axiosInstance';
 import { API_URL } from '../apiConfig';
+import { CheckUserRole } from '../routerGuard';
 
 function UploadButtons({ receivedImg, setReceivedImg, customID }) {
 
@@ -105,89 +106,91 @@ export default function AddPatient() {
     };
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Link href="/patients">
-                <IconButton aria-label="delete" size="large">
-                    <ArrowBackIcon fontSize="inherit" />
-                </IconButton>
-            </Link>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 0,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <PersonAddIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Add New Patient
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            value={patientDetails.fullName}
-                            onChange={(e) => {
-                                setPatientDetails((prev) => {
-                                    return { ...prev, fullName: e.target.value }
-                                });
-                            }}
-                            id="fullName"
-                            label="Patient's Full Name"
-                            name="fullName"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            fullWidth
-                            onChange={(e) => {
-                                setPatientDetails((prev) => {
-                                    return { ...prev, nameOfDonor: e.target.value }
-                                });
-                            }}
-                            value={patientDetails.nameOfDonor}
-                            name="donor"
-                            label="Donor's Name"
-                            id="donor"
-                        />
-                        <DatePicker
-                            sx={{ margin: "16px 0 8px 0" }}
-                            margin="normal"
-                            label="Visa Expiration Date"
-                            value={visaExpireDate}
-                            onChange={(newValue) => setVisaExpireDateValue(newValue)}
-                        />
-                        <DatePicker
-                            sx={{ margin: "16px 0 8px 0" }}
-                            margin="normal"
-                            label="Return Ticket"
-                            value={returnTicket}
-                            onChange={(newValue) => setReturnTicket(newValue)}
-                        />
-                        <p>Patient Image:</p>
-                        <UploadButtons receivedImg={imageUrl} setReceivedImg={setImageUrl} customID={"patient-upload"} />
-                        <br />
-                        <p>Passport Image:</p>
-                        <UploadButtons receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            disabled={buttonLabel === "saved!"}
-                            color={buttonLabel === "saved!" ? 'success' : 'primary'}
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            {buttonLabel}
-                        </Button>
+        <CheckUserRole allowedRoles={['admin', 'developer']}>
+            <ThemeProvider theme={defaultTheme}>
+                <Link href="/patients">
+                    <IconButton aria-label="delete" size="large">
+                        <ArrowBackIcon fontSize="inherit" />
+                    </IconButton>
+                </Link>
+                <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <Box
+                        sx={{
+                            marginTop: 0,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <PersonAddIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            Add New Patient
+                        </Typography>
+                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                value={patientDetails.fullName}
+                                onChange={(e) => {
+                                    setPatientDetails((prev) => {
+                                        return { ...prev, fullName: e.target.value }
+                                    });
+                                }}
+                                id="fullName"
+                                label="Patient's Full Name"
+                                name="fullName"
+                                autoFocus
+                            />
+                            <TextField
+                                margin="normal"
+                                fullWidth
+                                onChange={(e) => {
+                                    setPatientDetails((prev) => {
+                                        return { ...prev, nameOfDonor: e.target.value }
+                                    });
+                                }}
+                                value={patientDetails.nameOfDonor}
+                                name="donor"
+                                label="Donor's Name"
+                                id="donor"
+                            />
+                            <DatePicker
+                                sx={{ margin: "16px 0 8px 0" }}
+                                margin="normal"
+                                label="Visa Expiration Date"
+                                value={visaExpireDate}
+                                onChange={(newValue) => setVisaExpireDateValue(newValue)}
+                            />
+                            <DatePicker
+                                sx={{ margin: "16px 0 8px 0" }}
+                                margin="normal"
+                                label="Return Ticket"
+                                value={returnTicket}
+                                onChange={(newValue) => setReturnTicket(newValue)}
+                            />
+                            <p>Patient Image:</p>
+                            <UploadButtons receivedImg={imageUrl} setReceivedImg={setImageUrl} customID={"patient-upload"} />
+                            <br />
+                            <p>Passport Image:</p>
+                            <UploadButtons receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                disabled={buttonLabel === "saved!"}
+                                color={buttonLabel === "saved!" ? 'success' : 'primary'}
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                {buttonLabel}
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-            </Container>
-        </ThemeProvider>
+                </Container>
+            </ThemeProvider>
+        </CheckUserRole>
     );
 }

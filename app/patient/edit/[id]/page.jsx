@@ -15,10 +15,10 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import axios from 'axios';
+import axios from '@/app/axiosInstance';
 import { API_URL } from '@/app/apiConfig';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import { saveAs } from 'file-saver'
+import { CheckUserRole } from '@/app/routerGuard';
 
 const defaultTheme = createTheme();
 
@@ -83,7 +83,7 @@ export default function EditPatient({ params }) {
         const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
         const modifiedString = currentPatientDetails.patientPassport.replace("/uploads/passports/", "");
         axios.get(pictureUrl, {
-            responseType: 'arraybuffer', // Specify responseType as 'arraybuffer' to handle binary data
+            responseType: 'arraybuffer' // Specify responseType as 'arraybuffer' to handle binary data
         })
             .then((response) => {
                 // Create a blob from the binary data
@@ -106,129 +106,131 @@ export default function EditPatient({ params }) {
     }
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            {
-                currentPatientDetails &&
-                <div>
-                    <Link href={"/patient/" + patientID}>
-                        <IconButton aria-label="delete" size="large">
-                            <ArrowBackIcon fontSize="inherit" />
-                        </IconButton>
-                    </Link>
-                    <Container component="main" maxWidth="xs">
-                        <CssBaseline />
-                        <Box
-                            sx={{
-                                marginTop: 0,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                                <EditIcon />
-                            </Avatar>
+        <CheckUserRole allowedRoles={['admin', 'developer']}>
+            <ThemeProvider theme={defaultTheme}>
+                {
+                    currentPatientDetails &&
+                    <div>
+                        <Link href={"/patient/" + patientID}>
+                            <IconButton aria-label="delete" size="large">
+                                <ArrowBackIcon fontSize="inherit" />
+                            </IconButton>
+                        </Link>
+                        <Container component="main" maxWidth="xs">
+                            <CssBaseline />
+                            <Box
+                                sx={{
+                                    marginTop: 0,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                                    <EditIcon />
+                                </Avatar>
 
-                            <Typography component="h1" variant="h5">
-                                Edit Patient
-                            </Typography>
-                            <br /><br />
-                            {
-                                currentPatientDetails.patientPicture !== "none" && <Avatar sx={{ width: 50, height: 50 }} alt={currentPatientDetails.fullName} src={`${API_URL}${currentPatientDetails.patientPicture}`} />
-                            }
-                            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    value={currentPatientDetails.fullName}
-                                    onChange={(e) => {
-                                        setCurrentPatientDetails((prev) => {
-                                            return { ...prev, fullName: e.target.value }
-                                        });
-                                        setButtonLabel("Confirm");
-                                    }}
-                                    id="fullName"
-                                    label="Patient's Full Name"
-                                    name="fullName"
-                                    autoFocus
-                                />
-                                <TextField
-                                    margin="normal"
-                                    fullWidth
-                                    value={currentPatientDetails.nameOfDonor}
-                                    onChange={(e) => {
-                                        setCurrentPatientDetails((prev) => {
-                                            return { ...prev, nameOfDonor: e.target.value }
-                                        });
-                                        setButtonLabel("Confirm");
-                                    }}
-                                    name="donor"
-                                    label="Donor's Name"
-                                    id="donor"
-                                />
-                                <DatePicker
-                                    sx={{ margin: "16px 0 8px 0" }}
-                                    margin="normal"
-                                    label="Visa Expiration Date"
-                                    value={visaExpireDate}
-                                    onChange={(newValue) => {
-                                        setVisaExpireDateValue(newValue)
-                                        setButtonLabel("Confirm");
-                                    }}
-                                />
-                                <DatePicker
-                                    sx={{ margin: "16px 0 8px 0" }}
-                                    margin="normal"
-                                    label="Visa Expiration Date"
-                                    value={returnTicket}
-                                    onChange={(newValue) => {
-                                        setReturnTicket(newValue)
-                                        setButtonLabel("Confirm");
-                                    }}
-                                />
+                                <Typography component="h1" variant="h5">
+                                    Edit Patient
+                                </Typography>
+                                <br /><br />
+                                {
+                                    currentPatientDetails.patientPicture !== "none" && <Avatar sx={{ width: 50, height: 50 }} alt={currentPatientDetails.fullName} src={`${API_URL}${currentPatientDetails.patientPicture}`} />
+                                }
+                                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        value={currentPatientDetails.fullName}
+                                        onChange={(e) => {
+                                            setCurrentPatientDetails((prev) => {
+                                                return { ...prev, fullName: e.target.value }
+                                            });
+                                            setButtonLabel("Confirm");
+                                        }}
+                                        id="fullName"
+                                        label="Patient's Full Name"
+                                        name="fullName"
+                                        autoFocus
+                                    />
+                                    <TextField
+                                        margin="normal"
+                                        fullWidth
+                                        value={currentPatientDetails.nameOfDonor}
+                                        onChange={(e) => {
+                                            setCurrentPatientDetails((prev) => {
+                                                return { ...prev, nameOfDonor: e.target.value }
+                                            });
+                                            setButtonLabel("Confirm");
+                                        }}
+                                        name="donor"
+                                        label="Donor's Name"
+                                        id="donor"
+                                    />
+                                    <DatePicker
+                                        sx={{ margin: "16px 0 8px 0" }}
+                                        margin="normal"
+                                        label="Visa Expiration Date"
+                                        value={visaExpireDate}
+                                        onChange={(newValue) => {
+                                            setVisaExpireDateValue(newValue)
+                                            setButtonLabel("Confirm");
+                                        }}
+                                    />
+                                    <DatePicker
+                                        sx={{ margin: "16px 0 8px 0" }}
+                                        margin="normal"
+                                        label="Visa Expiration Date"
+                                        value={returnTicket}
+                                        onChange={(newValue) => {
+                                            setReturnTicket(newValue)
+                                            setButtonLabel("Confirm");
+                                        }}
+                                    />
+                                    <br />
+                                    <Button
+                                        variant="contained"
+                                        sx={{ mt: 2, mb: 1 }}
+                                        onClick={DownloadPassport}
+                                    >
+                                        <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
+                                    </Button>
 
-                                <Button
-                                    variant="contained"
-                                    sx={{ mt: 2, mb: 1 }}
-                                    onClick={DownloadPassport}
-                                >
-                                    <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
-                                </Button>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        disabled={buttonLabel === 'edit patient' || buttonLabel === 'updated!'}
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                    >
+                                        {buttonLabel}
+                                    </Button>
 
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    disabled={buttonLabel === 'edit patient' || buttonLabel === 'updated!'}
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    {buttonLabel}
-                                </Button>
+                                    <Button
+                                        fullWidth
+                                        variant="contained"
+                                        color="error"
+                                        onClick={() => {
+                                            if (
+                                                !confirm(`Are you sure you want to delete ${currentPatientDetails.fullName}`)
+                                            ) {
+                                                return;
+                                            }
+                                            deletePatient();
 
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="error"
-                                    onClick={() => {
-                                        if (
-                                            !confirm(`Are you sure you want to delete ${currentPatientDetails.fullName}`)
-                                        ) {
-                                            return;
-                                        }
-                                        deletePatient();
-
-                                    }}
-                                >
-                                    Delete Patient
-                                </Button>
+                                        }}
+                                    >
+                                        Delete Patient
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Container>
+                        </Container>
 
-                </div>
-            }
+                    </div>
+                }
 
-        </ThemeProvider >
+            </ThemeProvider>
+        </CheckUserRole>
     );
 }

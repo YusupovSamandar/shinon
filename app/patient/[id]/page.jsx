@@ -16,29 +16,72 @@ import PreWorkup from "@/app/components/analysisContent/pre-workup";
 import PatientStepper from "@/app/components/stepper";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { API_URL } from "./../../apiConfig"
-import axios from 'axios';
+import axios from '@/app/axiosInstance';
+import { displayForUser } from '@/app/routerGuard';
+import { useSelector } from 'react-redux';
+import { CheckUserRole } from '@/app/routerGuard';
 
+function formatUpdatesDate(date) {
+    date = new Date(date);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
 
-const UpdatesOnPatient = () => {
+    if (date.toDateString() === today.toDateString()) {
+        // Today
+        return `today ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        // Yesterday
+        return `yesterday ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    } else {
+        // Other days
+        return `${date.toLocaleString('en-US', { month: 'long', day: 'numeric' })} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    }
+}
+
+const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
+    const [pageToLoad, setPageToLoad] = useState(1);
+    const [loadLabel, setLoadLabel] = useState("load more")
+    const loadMoreUpdates = async () => {
+        setLoadLabel('loading...');
+        const restUpdates = await axios.get(`${API_URL}/api/updates/load/${patientID}`, { numberOfDataToLoad: 3, pageToLoad: pageToLoad });
+        if (restUpdates.status === 200) {
+            setPatientUpdates((prev) => [...prev, ...restUpdates.data]);
+            setPageToLoad((prev) => prev + 1);
+            if (restUpdates.data.length < 3) {
+                setLoadLabel('no more to display');
+            } else {
+                setLoadLabel('load more');
+            }
+        }
+
+    }
     return (
         <div>
-            <MessageBox
-                primary={"Supplemental actions within the card are explicitly called out using icons, text, and UI controls, typically placed at the bottom of the card."}
-                time={"Jan 9, 2014"}
-                editor={"Samandar Yusupov"}
+            {patientUpdates.map((msg, indx) => {
+                const thisDate = formatUpdatesDate(msg.date);
+                return (
+                    <div key={indx}>
+                        <MessageBox
+                            primary={msg.content}
+                            time={thisDate}
+                            editor={msg.editor}
 
-            />
-            <br />
+                        />
+                        <br />
+                    </div>
+                )
+            })}
             <div style={{ textAlign: "center" }}>
-                <Button style={{ backgroundColor: "#64CCC5" }} endIcon={<ExpandMoreIcon />} variant="contained" size="small">
-                    load more
+                <Button onClick={loadMoreUpdates} disabled={loadLabel === 'no more to display'} style={{ backgroundColor: "#64CCC5" }} endIcon={<ExpandMoreIcon />} variant="contained" size="small">
+                    {loadLabel}
                 </Button>
             </div>
         </div>
     )
 }
 
-const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT }) => {
+const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRole }) => {
 
     const [analysisTests, setAnalysisTests] = useState(allPatientAnalysis);
     const [saving, setSaving] = useState('Save Changes');
@@ -84,71 +127,87 @@ const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT }) => {
                 }}
             />
             <br />
-            <div style={{ textAlign: "right" }}>
+            {displayForUser(['admin', 'interpreter', 'developer'], currUserRole) && <div style={{ textAlign: "right" }}>
                 <Button onClick={handleSave} color={saving === 'Saved!!' ? 'success' : 'primary'} variant="contained">{saving}</Button>
-            </div>
+            </div>}
+
         </div>
     );
 }
 
 export default function CurrentPatient({ params }) {
     const patientID = params.id
+    const currentUser = useSelector((state) => state.userAuth);
     const [patientDetails, setPatientDetails] = useState(undefined);
+    const [patientUpdates, setPatientUpdates] = useState([]);
+    const [currentTab, setCurrentTab] = useState(0);
     useEffect(() => {
         (async function () {
             const { data } = await axios.get(`${API_URL}/api/patients/${patientID}`);
+            const { data: thisPatientUpdate } = await axios.get(`${API_URL}/api/updates/${patientID}`);
+            setPatientUpdates(thisPatientUpdate);
+
             setPatientDetails(data);
         })()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <div>
-            {
-                patientDetails ? <div>
-                    <div style={{ marginLeft: '16px' }}>
-                        <br />
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
-                            <Link href="/patients">
-                                <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
-                                    <ArrowBackIcon fontSize="inherit" />
-                                </IconButton>
-                            </Link>
-                            <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                                <Avatar sx={{ width: 50, height: 50 }} alt="Samandar" src={`${API_URL}${patientDetails.patientPicture}`} />
-                                <Typography component="div">
-                                    {patientDetails.fullName}
-                                </Typography>
+            <CheckUserRole allowedRoles={['developer', 'viewer', 'admin', 'interpreter']}>
+                {
+                    patientDetails ? <div>
+                        <div style={{ marginLeft: '16px' }}>
+                            <br />
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
+                                <Link href="/patients">
+                                    <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
+                                        <ArrowBackIcon fontSize="inherit" />
+                                    </IconButton>
+                                </Link>
+                                <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
+                                    <Avatar sx={{ width: 50, height: 50 }} alt="Samandar" src={`${API_URL}${patientDetails.patientPicture}`} />
+                                    <Typography component="div">
+                                        {patientDetails.fullName}
+                                    </Typography>
+                                </div>
+
+                                <Link href={`/patient/edit/${patientID}`} style={{ pointerEvents: displayForUser(['admin', 'developer'], currentUser?.value?.role) ? 'auto' : 'none' }}>
+                                    <IconButton style={{ position: 'relative', right: '10px', paddingLeft: "30px" }} aria-label="delete" size="large">
+                                        <ManageAccountsIcon fontSize="inherit" />
+                                    </IconButton>
+                                </Link>
                             </div>
-                            <Link href={`/patient/edit/${patientID}`}>
-                                <IconButton style={{ position: 'relative', right: '10px', paddingLeft: "30px" }} aria-label="delete" size="large">
-                                    <ManageAccountsIcon fontSize="inherit" />
-                                </IconButton>
-                            </Link>
+                            <br />
+                            <PatientStepper activeStepNumber={patientDetails.currentStatus} />
+                            {/* <br /> */}
+                            <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
+                                Status: <b>{patientDetails.currentStatus}</b>
+                            </Typography>
+                            <br />
                         </div>
-                        <br />
-                        <PatientStepper activeStepNumber={patientDetails.currentStatus} />
-                        {/* <br /> */}
-                        <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
-                            Status: <b>{patientDetails.currentStatus}</b>
+                        <Divider />
+                        <Tabs
+                            config={{
+                                content1: {
+                                    label: "Updates", value: <UpdatesOnPatient patientUpdates={patientUpdates} setPatientUpdates={setPatientUpdates} patientID={patientID} />
+                                },
+                                content2: { label: "Analysis", value: <PatientAnalysis currUserRole={currentUser?.value?.role} allPatientAnalysis={patientDetails.patientProgress} ptId={patientID} chagePatientDT={setPatientDetails} /> },
+                            }}
+                            setCurrentTab={setCurrentTab}
+                            currentTab={currentTab}
+                        />
+
+                        <Typography style={{ minHeight: "44px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
                         </Typography>
-                        <br />
+                        {displayForUser(['admin', 'interpreter', 'developer'], currentUser?.value?.role) && <MgsBar updatePatientUpdates={setPatientUpdates} updatingPatientId={patientID} />}
+
+
                     </div>
-                    <Divider />
-                    <Tabs config={{
-                        content1: { label: "Updates", value: <UpdatesOnPatient /> },
-                        content2: { label: "Analysis", value: <PatientAnalysis allPatientAnalysis={patientDetails.patientProgress} ptId={patientID} chagePatientDT={setPatientDetails} /> }
-                    }} />
+                        :
+                        <div></div>
+                }
 
-                    <Typography style={{ minHeight: "44px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
-                    </Typography>
-
-                    <MgsBar />
-                </div>
-                    :
-                    <div></div>
-            }
-
-
+            </CheckUserRole>
         </div>
 
     )
