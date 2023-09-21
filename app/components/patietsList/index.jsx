@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ProgressIndicator from "./../progressBar"
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
+import { displayForUser } from '@/app/routerGuard';
 import { updateValue } from '@/app/redux/features/patientsList-slice';
 
 
@@ -51,6 +52,8 @@ export default function BottomAppBar() {
     }, []);
 
     const patientsList = useSelector((state) => state.patientsList.value)
+    const currentUser = useSelector((state) => state.userAuth);
+
 
     return (
         <>
@@ -78,7 +81,7 @@ export default function BottomAppBar() {
                     </List>
                 </Paper>
             </React.Fragment>
-            <HideOnScroll>
+            {displayForUser(['admin', 'developer'], currentUser?.value?.role) && <HideOnScroll>
                 <div style={{ position: "fixed", bottom: "100px", zIndex: "9999999", right: "90px" }}>
                     <Link href={'/add-patient'}>
                         <StyledFab color="secondary" aria-label="add">
@@ -86,7 +89,8 @@ export default function BottomAppBar() {
                         </StyledFab>
                     </Link>
                 </div>
-            </HideOnScroll>
+            </HideOnScroll>}
+
         </>
     );
 }

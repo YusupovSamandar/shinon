@@ -15,6 +15,8 @@ import GroupIcon from '@mui/icons-material/Group';
 import TopBar from "./../topAppBar";
 import { useRouter } from 'next/navigation';
 import SummarizeIcon from '@mui/icons-material/Summarize';
+import { API_URL } from '@/app/apiConfig';
+import axios from '@/app/axiosInstance';
 import SickIcon from '@mui/icons-material/Sick';
 
 export default function SwipeableTemporaryDrawer({ enableSearch }) {
@@ -63,7 +65,17 @@ export default function SwipeableTemporaryDrawer({ enableSearch }) {
           ].map((text, index) => (
             <ListItem key={index} disablePadding>
               <ListItemButton onClick={() => {
-                router.push(text.goto);
+                if (text.goto === '/login') {
+                  (async function () {
+                    const logoutResponse = await axios.post(`${API_URL}/api/users/logout`);
+                    if (logoutResponse.status === 204) {
+                      localStorage.removeItem('currentUserID');
+                      router.push(text.goto);
+                    }
+                  })();
+                } else {
+                  router.push(text.goto);
+                }
               }}>
                 <ListItemIcon>
                   {text.icon}

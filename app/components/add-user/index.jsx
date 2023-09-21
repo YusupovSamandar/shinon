@@ -12,10 +12,9 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
-import axios from 'axios';
+import axios from '@/app/axiosInstance';
 import { API_URL } from '@/app/apiConfig';
 import { useDispatch } from 'react-redux';
-import { saveNewData } from '@/app/redux/features/users-slice';
 import { fetchAllUsers } from '@/app/redux/features/users-slice';
 const defaultTheme = createTheme();
 

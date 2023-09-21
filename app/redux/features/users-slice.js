@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from '@/app/axiosInstance';
 import { API_URL } from "@/app/apiConfig";
 let users_data = [];
 
