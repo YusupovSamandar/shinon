@@ -44,7 +44,7 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
     const [loadLabel, setLoadLabel] = useState("load more")
     const loadMoreUpdates = async () => {
         setLoadLabel('loading...');
-        const restUpdates = await axios.get(`${API_URL}/api/updates/load/${patientID}`, { numberOfDataToLoad: 3, pageToLoad: pageToLoad });
+        const restUpdates = await axios.post(`${API_URL}/api/updates/load/${patientID}`, { numberOfDataToLoad: 3, page: pageToLoad });
         if (restUpdates.status === 200) {
             setPatientUpdates((prev) => [...prev, ...restUpdates.data]);
             setPageToLoad((prev) => prev + 1);
@@ -58,7 +58,7 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
     }
     return (
         <div>
-            {patientUpdates.map((msg, indx) => {
+            {(patientUpdates.length > 0) ? patientUpdates.map((msg, indx) => {
                 const thisDate = formatUpdatesDate(msg.date);
                 return (
                     <div key={indx}>
@@ -71,7 +71,8 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
                         <br />
                     </div>
                 )
-            })}
+            }) : <div style={{ textAlign: "center" }}>no updates for today</div>}
+            <br />
             <div style={{ textAlign: "center" }}>
                 <Button onClick={loadMoreUpdates} disabled={loadLabel === 'no more to display'} style={{ backgroundColor: "#64CCC5" }} endIcon={<ExpandMoreIcon />} variant="contained" size="small">
                     {loadLabel}

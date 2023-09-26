@@ -33,7 +33,6 @@ export default function CustomizedInputBase({ updatingPatientId, updatePatientUp
 
     return (
         <>
-
             <Paper
                 component="form"
                 sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', position: 'fixed', bottom: '0', width: "100%", borderTop: "1px solid #F7F7F7" }}

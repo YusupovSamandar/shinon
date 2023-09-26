@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 
 
 export default function SimpleBottomNavigation({ item1, item2, item3, item4 }) {
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = React.useState();
     const dispatch = useDispatch();
 
     const filterPatientList = (chosenStatus) => {

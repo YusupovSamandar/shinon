@@ -18,7 +18,7 @@ export const patientsList = createSlice({
     initialState,
     reducers: {
         updateState: (state, action) => {
-            // state.value = action.payload;
+            state.value = action.payload;
             // update state
         }
     }
