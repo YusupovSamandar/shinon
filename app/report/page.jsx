@@ -36,7 +36,7 @@ export default function Report() {
 
     const fetchReportUpdates = async (stDate, endDt) => {
         const { data: updateReportData } = await axios.post(`${API_URL}/api/updates/report`, { startDate: stDate, endDate: endDt });
-        if (updateReportData.length > 0) {
+        if (updateReportData && updateReportData.length > 0) {
             setPureReportDT((prevv) => [...prevv, ...updateReportData]);
         }
         return updateReportData;
@@ -109,39 +109,42 @@ export default function Report() {
     }, []);
     return (
         <div>
-            <CheckUserRole allowedRoles={['developer', 'viewer', 'admin', 'interpreter']}>
-                <Sidebar enableSearch={false} />
-                <Typography style={{ minHeight: "56px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
-                </Typography>
-                {Object.keys(reportData).length > 0 ? Object.keys(reportData).map((objDate, ind) => (
-                    <div key={ind}>
-                        <div style={{ color: 'rgb(14, 162, 189)', padding: '10px', fontSize: "0.9rem", backgroundColor: "#F0F0F0" }}>
-                            <b>{formatDate(objDate)}</b>
+            {
+                (pureReportDT && pureReportDT.length > 0) &&
+                <CheckUserRole allowedRoles={['developer', 'viewer', 'admin', 'interpreter']}>
+                    <Sidebar enableSearch={false} />
+                    <Typography style={{ minHeight: "56px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
+                    </Typography>
+                    {Object.keys(reportData).length > 0 ? Object.keys(reportData).map((objDate, ind) => (
+                        <div key={ind}>
+                            <div style={{ color: 'rgb(14, 162, 189)', padding: '10px', fontSize: "0.9rem", backgroundColor: "#F0F0F0" }}>
+                                <b>{formatDate(objDate)}</b>
+                            </div>
+                            {reportData[objDate].map((onePTUpdate, updateIndx) => (
+                                <ReportMessage
+                                    key={updateIndx}
+                                    ptName={onePTUpdate.patientFullName}
+                                    reportList={onePTUpdate.updates}
+                                />
+                            ))}
                         </div>
-                        {reportData[objDate].map((onePTUpdate, updateIndx) => (
-                            <ReportMessage
-                                key={updateIndx}
-                                ptName={onePTUpdate.patientFullName}
-                                reportList={onePTUpdate.updates}
-                            />
-                        ))}
+                    )) : <div style={{ textAlign: "center", margin: "20px 0" }}>no updates for today</div>}
+                    <div style={{ textAlign: "center" }}>
+                        <Button
+                            onClick={() => {
+                                handleLoadMore()
+                            }}
+                            disabled={loadMoreBtnLabel === 'no more to display' || loadMoreBtnLabel === 'loading'}
+                            style={{ backgroundColor: "#64CCC5" }}
+                            endIcon={<ExpandMoreIcon />}
+                            variant="contained"
+                            size="small"
+                        >
+                            {loadMoreBtnLabel}
+                        </Button>
                     </div>
-                )) : <div style={{ textAlign: "center", margin: "20px 0" }}>no updates for today</div>}
-                <div style={{ textAlign: "center" }}>
-                    <Button
-                        onClick={() => {
-                            handleLoadMore()
-                        }}
-                        disabled={loadMoreBtnLabel === 'no more to display' || loadMoreBtnLabel === 'loading'}
-                        style={{ backgroundColor: "#64CCC5" }}
-                        endIcon={<ExpandMoreIcon />}
-                        variant="contained"
-                        size="small"
-                    >
-                        {loadMoreBtnLabel}
-                    </Button>
-                </div>
-            </CheckUserRole>
+                </CheckUserRole>
+            }
         </div>
     )
 }

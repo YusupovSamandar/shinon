@@ -15,6 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import dayjs from 'dayjs';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Stack from "@mui/material/Stack";
 import axios from '@/app/axiosInstance';
 import { API_URL } from '../apiConfig';
@@ -51,6 +52,8 @@ function UploadButtons({ receivedImg, setReceivedImg, customID }) {
 const defaultTheme = createTheme();
 
 export default function AddPatient() {
+    const router = useRouter();
+
     const date = new Date();
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -100,6 +103,7 @@ export default function AddPatient() {
             setImageUrl(null);
             setPassportImg(null)
             setTimeout(() => {
+                router.push('/patients')
                 setButtonLabel('Confirm');
             }, 2000);
         }

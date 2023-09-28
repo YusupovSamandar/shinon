@@ -52,13 +52,6 @@ export default function BottomAppBar() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const patientsList = useSelector((state) => state.patientsList.value)
-    React.useEffect(() => {
-        if (patientsList.length > 0) {
-            console.log(patientsList);
-            // dispatch(updateState());
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [patientsList]);
 
     const currentUser = useSelector((state) => state.userAuth);
 
