@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { displayForUser } from '@/app/routerGuard';
 import { updateValue } from '@/app/redux/features/patientsList-slice';
+import { updateState } from '@/app/redux/features/warningMessagesList-slice';
 
 
 function HideOnScroll(props) {
@@ -50,8 +51,8 @@ export default function BottomAppBar() {
         dispatch(updateValue(''));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
     const patientsList = useSelector((state) => state.patientsList.value)
+
     const currentUser = useSelector((state) => state.userAuth);
 
 

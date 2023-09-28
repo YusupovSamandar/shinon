@@ -50,7 +50,6 @@ export default function AlignItemsList({ reportList, ptName }) {
                         </div>
                     </ListItem>
                 </div>
-
                 <Divider variant="inset" style={{ margin: "0 20px" }} component="li" />
             </List>
         </Item>

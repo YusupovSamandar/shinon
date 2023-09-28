@@ -13,6 +13,7 @@ axiosInstance.interceptors.response.use((response) => {
         window.location.href = '/login'; // Replace '/login' with your login page URL
     } else if (error.response && error.response.status === 401) {
         window.location.href = '/restricted';
+
     } else {
         window.location.href = '/404';
     }

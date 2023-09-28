@@ -8,7 +8,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import Link from 'next/link';
 import BottomFilterBar from "@/app/components/bottomFilterBar";
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import StackedLineChartIcon from '@mui/icons-material/StackedLineChart';
+import MedicationIcon from '@mui/icons-material/Medication';
+import AirlineSeatFlatIcon from '@mui/icons-material/AirlineSeatFlat';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
 import { fetchPatients } from "./../redux/features/patientsList-slice";
 import { CheckUserRole } from '../routerGuard';
 
@@ -38,9 +40,9 @@ export default function Patients() {
                 <div style={{ height: "50px" }}></div>
                 <BottomFilterBar
                     item1={{ label: "Pre-Work up", icon: <ShowChartIcon /> }}
-                    item2={{ label: "Surgery", icon: <StackedLineChartIcon /> }}
-                    item3={{ label: "Post Surgery", icon: <ShowChartIcon /> }}
-                    item4={{ label: "Post tx follow up updates", icon: <ShowChartIcon /> }}
+                    item2={{ label: "Surgery", icon: <VaccinesIcon /> }}
+                    item3={{ label: "Post Surgery", icon: <AirlineSeatFlatIcon /> }}
+                    item4={{ label: "Post tx follow up updates", icon: <MedicationIcon /> }}
                 />
             </CheckUserRole>
         </div>
