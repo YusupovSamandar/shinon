@@ -166,7 +166,7 @@ export default function CurrentPatient({ params }) {
                                     </IconButton>
                                 </Link>
                                 <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                                    <Avatar sx={{ width: 50, height: 50 }} alt="Samandar" src={`${API_URL}${patientDetails.patientPicture}`} />
+                                    <Avatar sx={{ width: 50, height: 50 }} alt={patientDetails.fullName} src={`${API_URL}${patientDetails.patientPicture}`} />
                                     <Typography component="div">
                                         {patientDetails.fullName}
                                     </Typography>
