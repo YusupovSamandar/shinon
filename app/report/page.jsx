@@ -110,7 +110,7 @@ export default function Report() {
     return (
         <div>
             {
-                (pureReportDT && pureReportDT.length > 0) &&
+                pureReportDT &&
                 <CheckUserRole allowedRoles={['developer', 'viewer', 'admin', 'interpreter']}>
                     <Sidebar enableSearch={false} />
                     <Typography style={{ minHeight: "56px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
