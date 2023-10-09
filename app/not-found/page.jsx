@@ -12,7 +12,8 @@ export default function Restricted() {
             {"Page not Found"}
          </Typography>
          <Typography variant="subtitle2" gutterBottom>
-            please go back to <Link href={"/patients"} style={{ color: "blue" }}>HOME</Link>
+            your session might me expired
+            please go back to <Link href={"/patients"} style={{ color: "blue" }}>HOME</Link> or <Link href={"/patients"} style={{ color: "blue" }}>LOGIN</Link> first
          </Typography>
       </div>
    )
