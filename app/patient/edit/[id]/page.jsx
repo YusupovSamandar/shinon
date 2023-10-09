@@ -28,6 +28,7 @@ export default function EditPatient({ params }) {
     const patientID = params.id;
     const [currentPatientDetails, setCurrentPatientDetails] = React.useState(undefined);
     const [buttonLabel, setButtonLabel] = React.useState('edit patient');
+    const [deleteLabel, setDeleteLabel] = React.useState('Delete Patient');
 
     // Visa States
 
@@ -106,7 +107,6 @@ export default function EditPatient({ params }) {
             returnTicket: reformatDate(returnTicket),
 
         };
-        console.log(edittingObj);
         (async function () {
             const editResponse = await axios.put(`${API_URL}/api/patients/${patientID}`, edittingObj);
             if (editResponse.status === 200) {
@@ -119,9 +119,13 @@ export default function EditPatient({ params }) {
     };
 
     const deletePatient = async () => {
+        setDeleteLabel("deleting...")
         const deleteResponse = await axios.delete(`${API_URL}/api/patients/${patientID}`);
         if (deleteResponse.status === 200) {
+            setDeleteLabel("Delete Patient");
             router.push('/patients');
+        } else {
+            setDeleteLabel("Delete Patient");
         }
     }
 
@@ -340,6 +344,7 @@ export default function EditPatient({ params }) {
                                         <TextField
                                             margin="normal"
                                             fullWidth
+                                            required
                                             onChange={(e) => {
                                                 setCurrentPatientDetails((prev) => {
                                                     return { ...prev, nameOfDonor: e.target.value }
@@ -354,6 +359,7 @@ export default function EditPatient({ params }) {
                                         />
                                         <TextField
                                             margin="normal"
+                                            required
                                             fullWidth
                                             onChange={(e) => {
                                                 setCurrentPatientDetails((prev) => {
@@ -565,19 +571,22 @@ export default function EditPatient({ params }) {
 
                                     </section>
                                     <br />
-                                    <Button
-                                        variant="contained"
-                                        sx={{ mt: 2, mb: 1 }}
-                                    // onClick={DownloadPassport}
-                                    >   <a href={API_URL + currentPatientDetails.patientPassport}>
-                                            <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
-                                        </a>
-                                    </Button>
+                                    {
+                                        currentPatientDetails.patientPassport !== "none" && <Button
+                                            variant="contained"
+                                            sx={{ mt: 2, mb: 1 }}
+                                        // onClick={DownloadPassport}
+                                        >   <a href={API_URL + currentPatientDetails.patientPassport}>
+                                                <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
+                                            </a>
+                                        </Button>
+                                    }
+
 
                                     <Button
                                         type="submit"
                                         fullWidth
-                                        disabled={buttonLabel === 'edit patient' || buttonLabel === 'updated!'}
+                                        disabled={buttonLabel === 'edit patient' || buttonLabel === 'updated!' || buttonLabel === "saving"}
                                         variant="contained"
                                         sx={{ mt: 3, mb: 2 }}
                                     >
@@ -598,7 +607,7 @@ export default function EditPatient({ params }) {
 
                                         }}
                                     >
-                                        Delete Patient
+                                        {deleteLabel}
                                     </Button>
                                 </Box>
                             </Box>

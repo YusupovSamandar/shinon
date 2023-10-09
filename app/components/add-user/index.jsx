@@ -22,10 +22,13 @@ export default function AddUser({ setCurrentTab }) {
     const dispatch = useDispatch();
     const [newUser, setNewUser] = React.useState({ login: '', password: '' });
     const [userRole, setUserRole] = React.useState('viewer');
+    const [addButtonTxt, setAddButtonTxt] = React.useState('Add New User');
 
     const saveNewUser = async () => {
+        setAddButtonTxt("Saving...");
         const response = await axios.post(`${API_URL}/api/users`, { ...newUser, role: userRole });
         if (response.status === 200) {
+            setAddButtonTxt("Add New User");
             dispatch(fetchAllUsers());
             setCurrentTab(0);
 
@@ -40,7 +43,7 @@ export default function AddUser({ setCurrentTab }) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        saveNewUser();
+        // saveNewUser();
     };
 
     return (
@@ -61,7 +64,7 @@ export default function AddUser({ setCurrentTab }) {
                     <Typography component="h1" variant="h5">
                         Add New User
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1 }} autoComplete="off">
                         <TextField
                             margin="normal"
                             required
@@ -71,11 +74,6 @@ export default function AddUser({ setCurrentTab }) {
                                 setNewUser((prev) => {
                                     return { ...prev, login: e.target.value };
                                 })
-                            }}
-                            inputProps={{
-                                form: {
-                                    autoComplete: 'off',
-                                }
                             }}
                             id="login"
                             label="New User Login"
@@ -90,12 +88,6 @@ export default function AddUser({ setCurrentTab }) {
                                 setNewUser((prev) => {
                                     return { ...prev, password: e.target.value };
                                 })
-                            }}
-                            inputProps={{
-                                autoComplete: 'new-password',
-                                form: {
-                                    autoComplete: 'off',
-                                }
                             }}
                             fullWidth
                             name="password"
@@ -121,12 +113,13 @@ export default function AddUser({ setCurrentTab }) {
                         </Select>
 
                         <Button
+                            disabled={addButtonTxt === "Saving..."}
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Add New User
+                            {addButtonTxt}
                         </Button>
                     </Box>
                 </Box>

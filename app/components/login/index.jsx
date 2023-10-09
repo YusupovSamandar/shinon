@@ -44,10 +44,12 @@ export default function SignIn() {
     const router = useRouter();
 
     const [error, setError] = React.useState(false);
-    const [rememberMe, setRememberMe] = React.useState(false)
+    const [rememberMe, setRememberMe] = React.useState(false);
+    const [signInText, setSignInText] = React.useState("Sign In");
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setSignInText("signing in");
         const data = new FormData(event.currentTarget);
         (async function () {
             try {
@@ -61,9 +63,11 @@ export default function SignIn() {
                 });
                 dispatch(updateState({ value: foundUser.data.user, isAuth: true }));
                 localStorage.setItem('currentUserID', foundUser.data.user._id)
+                setSignInText("sign in");
                 router.push('/patients');
             } catch (error) {
                 console.log(error);
+                setSignInText("sign in");
                 setError(true)
             }
         })();
@@ -126,10 +130,11 @@ export default function SignIn() {
                         <Button
                             type="submit"
                             fullWidth
+                            disabled={signInText === "signing in"}
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            {signInText}
                         </Button>
                     </Box>
                 </Box>

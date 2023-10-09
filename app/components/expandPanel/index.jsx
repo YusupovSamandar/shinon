@@ -44,7 +44,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem3 }) {
+export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem3, groupItem4 }) {
     const [expanded, setExpanded] = React.useState('panel1');
 
     const handleChange = (panel) => (event, newExpanded) => {
@@ -76,7 +76,20 @@ export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem
             </Accordion>
             <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
                 <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography>{groupItem2.label}</Typography>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                        <p>{groupItem2.label}</p>
+                        <div>
+                            <Checkbox
+                                checked={groupItem2.disableAccortion}
+                                onChange={() => {
+                                    groupItem2.setCurrentStatus((prev) => {
+                                        return { ...prev, surgery: { ...prev.surgery, complete: !prev.surgery.complete } }
+                                    })
+                                }}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                        </div>
+                    </div>
                 </AccordionSummary>
                 <AccordionDetails>
                     {groupItem2.content}
@@ -84,7 +97,43 @@ export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem
             </Accordion>
             <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                 <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                    <Typography>{groupItem3.label}</Typography>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                        <p>{groupItem3.label}</p>
+                        <div>
+                            <Checkbox
+                                checked={groupItem3.disableAccortion}
+                                onChange={() => {
+                                    groupItem3.setCurrentStatus((prev) => {
+                                        return { ...prev, postSurgery: { ...prev.postSurgery, complete: !prev.postSurgery.complete } }
+                                    })
+                                }}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                        </div>
+                    </div>
+
+                </AccordionSummary>
+                <AccordionDetails>
+                    {groupItem3.content}
+                </AccordionDetails>
+            </Accordion>
+            <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+                <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                        <p>{groupItem4.label}</p>
+                        <div>
+                            <Checkbox
+                                checked={groupItem4.disableAccortion}
+                                onChange={() => {
+                                    groupItem4.setCurrentStatus((prev) => {
+                                        return { ...prev, postTxFollowUp: { ...prev.postTxFollowUp, complete: !prev.postTxFollowUp.complete } }
+                                    })
+                                }}
+                                inputProps={{ 'aria-label': 'controlled' }}
+                            />
+                        </div>
+                    </div>
+
                 </AccordionSummary>
                 <AccordionDetails>
                     {groupItem3.content}

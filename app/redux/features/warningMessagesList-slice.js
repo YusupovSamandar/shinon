@@ -1,12 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const warning_messages = [
-    {
-        patient: "Samandar Yusupov",
-        message: "Visa is About to Expire",
-        goto: "/patient/2",
-        messageSeverity: "warning"
-    }
 ];
 
 const initialState = {

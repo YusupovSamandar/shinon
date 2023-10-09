@@ -8,7 +8,7 @@ import axios from '@/app/axiosInstance';
 import { API_URL } from '@/app/apiConfig';
 
 
-export const Example = ({ headers, data, setNewData, role, hide }) => {
+export const Example = ({ headers, data, setNewData, hide }) => {
     const dispach = useDispatch();
 
     const columns = useMemo(

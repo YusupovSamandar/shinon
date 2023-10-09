@@ -109,7 +109,9 @@ export default function AddPatient() {
     const [buttonLabel, setButtonLabel] = React.useState("confirm")
 
     const handleSubmit = async (event) => {
+
         event.preventDefault();
+        setButtonLabel("saving...");
 
         function reformatDate(dayjsDate) {
             return `${dayjsDate.$y}-${("" + (dayjsDate.$M + 1)).padStart(2, '0')}-${("" + dayjsDate.$D).padStart(2, '0')}`;
@@ -117,20 +119,20 @@ export default function AddPatient() {
         }
 
         const formData = new FormData();
-        formData.append('fullName', patientDetails.fullName);
-        formData.append('nameOfDonor', patientDetails.nameOfDonor);
-        formData.append('patientUHID', patientDetails.patientUHID);
-        formData.append('donorUHID', patientDetails.donorUHID);
-        formData.append('nameOfAttendant', patientDetails.nameOfAttendant);
-        formData.append('nameOfAttendant2', patientDetails.nameOfAttendant2);
-        formData.append('passportNumber', patientDetails.passportNumber);
-        formData.append('donorPassportNumber', patientDetails.donorPassportNumber);
-        formData.append('attendantPassportNumber', patientDetails.attendantPassportNumber);
-        formData.append('attendant2PassportNumber', patientDetails.attendant2PassportNumber);
-        formData.append('country', patientDetails.country);
-        formData.append('hospital', patientDetails.hospital);
-        formData.append('speciality', patientDetails.speciality);
-        formData.append('doctorDetails', patientDetails.doctorDetails);
+        formData.append('fullName', patientDetails.fullName.trim());
+        formData.append('nameOfDonor', patientDetails.nameOfDonor.trim());
+        formData.append('patientUHID', patientDetails.patientUHID.trim());
+        formData.append('donorUHID', patientDetails.donorUHID.trim());
+        formData.append('nameOfAttendant', patientDetails.nameOfAttendant.trim());
+        formData.append('nameOfAttendant2', patientDetails.nameOfAttendant2.trim());
+        formData.append('passportNumber', patientDetails.passportNumber.trim());
+        formData.append('donorPassportNumber', patientDetails.donorPassportNumber.trim());
+        formData.append('attendantPassportNumber', patientDetails.attendantPassportNumber.trim());
+        formData.append('attendant2PassportNumber', patientDetails.attendant2PassportNumber.trim());
+        formData.append('country', patientDetails.country.trim());
+        formData.append('hospital', patientDetails.hospital.trim());
+        formData.append('speciality', patientDetails.speciality.trim());
+        formData.append('doctorDetails', patientDetails.doctorDetails.trim());
         // dates
         formData.append('dateOfVisaExpiry', reformatDate(visaExpireDate));
         formData.append('visaIssueDate', reformatDate(visaIssueDate));
@@ -155,7 +157,6 @@ export default function AddPatient() {
             formData.append('patientPassport', passportImg)
         }
 
-        setButtonLabel("saving...")
         const saveResponse = await axios.post(`${API_URL}/api/patients`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -198,7 +199,7 @@ export default function AddPatient() {
                         <Typography component="h1" variant="h5">
                             Add New Patient
                         </Typography>
-                        <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1 }}>
+                        <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1 }} autoComplete="off">
                             <SectionTitle value={"Patient"} />
                             <section>
                                 <TextField
@@ -339,6 +340,7 @@ export default function AddPatient() {
                             <section>
                                 <TextField
                                     margin="normal"
+                                    required
                                     fullWidth
                                     onChange={(e) => {
                                         setPatientDetails((prev) => {
@@ -352,6 +354,7 @@ export default function AddPatient() {
                                 />
                                 <TextField
                                     margin="normal"
+                                    required
                                     fullWidth
                                     onChange={(e) => {
                                         setPatientDetails((prev) => {
@@ -528,7 +531,7 @@ export default function AddPatient() {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                disabled={buttonLabel === "saved!"}
+                                disabled={buttonLabel === "saved!" || buttonLabel === "saving..."}
                                 color={buttonLabel === "saved!" ? 'success' : 'primary'}
                                 sx={{ mt: 3, mb: 2 }}
                             >

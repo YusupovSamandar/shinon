@@ -8,12 +8,18 @@ import SendIcon from '@mui/icons-material/Send';
 import axios from '@/app/axiosInstance';
 import { API_URL } from '@/app/apiConfig';
 import { useRouter } from 'next/navigation';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 export default function CustomizedInputBase({ updatingPatientId, updatePatientUpdates }) {
     const [inputText, setInputText] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const router = useRouter();
 
     const handleSendUpdate = async () => {
+        setIsLoading(true);
+        setInputText('');
         const editorId = localStorage.getItem('currentUserID');
         if (editorId && inputText.length > 0) {
             const postedUpdate = await axios.post(`${API_URL}/api/updates`, {
@@ -24,7 +30,7 @@ export default function CustomizedInputBase({ updatingPatientId, updatePatientUp
             });
             if (postedUpdate.status === 200) {
                 updatePatientUpdates((prev) => [postedUpdate.data, ...prev]);
-                setInputText('');
+                setIsLoading(false);
             }
         } else {
             router.push('/login');
@@ -52,8 +58,8 @@ export default function CustomizedInputBase({ updatingPatientId, updatePatientUp
                     inputProps={{ 'aria-label': 'search google maps' }}
                 />
                 <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-                <IconButton disabled={!(inputText.length > 0)} onClick={handleSendUpdate} color="primary" sx={{ p: '10px' }} aria-label="directions">
-                    <SendIcon />
+                <IconButton disabled={!(inputText.length > 0) || isLoading} onClick={handleSendUpdate} color="primary" sx={{ p: '10px' }} aria-label="directions">
+                    {isLoading ? <CircularProgress size={"24px"} /> : <SendIcon />}
                 </IconButton>
             </Paper>
         </>

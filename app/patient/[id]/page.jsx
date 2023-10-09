@@ -74,7 +74,7 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
             }) : <div style={{ textAlign: "center" }}>no updates for today</div>}
             <br />
             <div style={{ textAlign: "center" }}>
-                <Button onClick={loadMoreUpdates} disabled={loadLabel === 'no more to display'} style={{ backgroundColor: "#64CCC5" }} endIcon={<ExpandMoreIcon />} variant="contained" size="small">
+                <Button onClick={loadMoreUpdates} disabled={loadLabel === 'no more to display' || loadLabel === "loading..."} style={{ backgroundColor: "#64CCC5" }} endIcon={<ExpandMoreIcon />} variant="contained" size="small">
                     {loadLabel}
                 </Button>
             </div>
@@ -126,10 +126,16 @@ const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRol
                     disableAccortion: analysisTests.postSurgery.complete,
                     setCurrentStatus: setAnalysisTests
                 }}
+                groupItem4={{
+                    label: "Post Tx Follow Up Updates",
+                    content: <PreWorkup checksData={analysisTests} checksSection={'postTxFollowUp'} setChecksData={setAnalysisTests} />,
+                    disableAccortion: analysisTests.postTxFollowUp.complete,
+                    setCurrentStatus: setAnalysisTests
+                }}
             />
             <br />
             {displayForUser(['admin', 'interpreter', 'developer'], currUserRole) && <div style={{ textAlign: "right" }}>
-                <Button onClick={handleSave} color={saving === 'Saved!!' ? 'success' : 'primary'} variant="contained">{saving}</Button>
+                <Button onClick={handleSave} disabled={saving === "saving..."} color={saving === 'Saved!!' ? 'success' : 'primary'} variant="contained">{saving}</Button>
             </div>}
 
         </div>
@@ -181,9 +187,14 @@ export default function CurrentPatient({ params }) {
                             <br />
                             <PatientStepper activeStepNumber={patientDetails.currentStatus} />
                             {/* <br /> */}
-                            <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
-                                Status: <b>{patientDetails.currentStatus}</b>
-                            </Typography>
+                            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
+                                    Status: <b>{patientDetails.currentStatus}</b>
+                                </Typography>
+                                <Typography sx={{ fontSize: 15, marginTop: "10px", marginRight: "16px" }} color="text.secondary">
+                                    UHID: <b>{patientDetails.patientUHID}</b>
+                                </Typography>
+                            </div>
                             <br />
                         </div>
                         <Divider />
