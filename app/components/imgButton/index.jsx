@@ -65,7 +65,7 @@ const ImageMarked = styled('span')(({ theme }) => ({
     transition: theme.transitions.create('opacity'),
 }));
 
-export default function ButtonBaseDemo({ currentImage }) {
+export default function ButtonBaseDemo({ currentImage, acceptFiles }) {
     return (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', minWidth: 150, width: '100%' }}>
 
@@ -75,7 +75,7 @@ export default function ButtonBaseDemo({ currentImage }) {
                 key={currentImage.title}
             >
 
-                {currentImage.url && <ImageSrc style={{ backgroundImage: `url(${URL.createObjectURL(currentImage.url)})` }} />}
+                {(acceptFiles === "image/*" && currentImage.url) && <ImageSrc style={{ backgroundImage: `url(${URL.createObjectURL(currentImage.url)})` }} />}
                 <ImageBackdrop className="MuiImageBackdrop-root" />
                 <Image alt="">
                     <Typography

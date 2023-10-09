@@ -22,7 +22,7 @@ import { API_URL } from '../apiConfig';
 import { CheckUserRole } from '../routerGuard';
 import SectionTitle from '../components/section-title';
 
-function UploadButtons({ receivedImg, setReceivedImg, customID }) {
+function UploadButtons({ receivedImg, setReceivedImg, customID, acceptFiles }) {
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -32,14 +32,18 @@ function UploadButtons({ receivedImg, setReceivedImg, customID }) {
     return (
         <Stack direction="row" alignItems="center" spacing={2}>
             <label htmlFor={customID}>
-                <ImgButton currentImage={{
-                    url: receivedImg,
-                    title: receivedImg ? 'changeImage' : 'select image',
-                }} />
+                <ImgButton
+                    acceptFiles={acceptFiles}
+                    currentImage={{
+                        url: receivedImg,
+                        title: receivedImg ? 'change file' : acceptFiles === ".pdf" ? receivedImg?.name || "select pdf file" : 'select image',
+                    }} />
+                {acceptFiles === ".pdf" && <p style={{ width: '150px' }}>chosen file: {receivedImg?.name || "none"}</p>}
+
                 <input
                     id={customID}
                     hidden
-                    accept="image/*"
+                    accept={acceptFiles}
                     type="file"
                     onChange={handleFileUpload}
                 />
@@ -324,10 +328,10 @@ export default function AddPatient() {
                                     onChange={(newValue) => setDateofArrival(newValue)}
                                 />
                                 <p>Patient Image:</p>
-                                <UploadButtons receivedImg={imageUrl} setReceivedImg={setImageUrl} customID={"patient-upload"} />
+                                <UploadButtons acceptFiles={"image/*"} receivedImg={imageUrl} setReceivedImg={setImageUrl} customID={"patient-upload"} />
                                 <br />
                                 <p>Passport Image:</p>
-                                <UploadButtons receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
+                                <UploadButtons acceptFiles={".pdf"} receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
                             </section>
                             <br /><br />
 
@@ -455,7 +459,7 @@ export default function AddPatient() {
                                             return { ...prev, attendant2PassportNumber: e.target.value }
                                         });
                                     }}
-                                    value={patientDetails.attendantPassportNumber}
+                                    value={patientDetails.attendant2PassportNumber}
                                     name="attendant2PassportNumber"
                                     label="Second Attendant's Passport Number"
                                     id="attendant2PassportNumber"

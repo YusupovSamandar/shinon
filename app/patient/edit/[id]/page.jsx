@@ -82,15 +82,31 @@ export default function EditPatient({ params }) {
 
     const handleSubmit = (event) => {
         setButtonLabel("saving");
-        const formattedVisaExpireDate = `${visaExpireDate.$y}-${("" + (visaExpireDate.$M + 1)).padStart(2, '0')}-${("" + visaExpireDate.$D).padStart(2, '0')}`;
-        const formattedReturnTicket = `${returnTicket.$y}-${("" + (returnTicket.$M + 1)).padStart(2, '0')}-${("" + returnTicket.$D).padStart(2, '0')}`;
+        const reformatDate = (dateObj) => {
+            return `${dateObj.$y}-${("" + (dateObj.$M + 1)).padStart(2, '0')}-${("" + dateObj.$D).padStart(2, '0')}`;
+        }
         event.preventDefault();
         const edittingObj = {
-            fullName: currentPatientDetails.fullName,
-            nameOfDonor: currentPatientDetails.nameOfDonor,
-            dateOfVisaExpiry: formattedVisaExpireDate,
-            returnTicket: formattedReturnTicket
+            ...currentPatientDetails,
+            // dates
+            dateOfVisaExpiry: reformatDate(visaExpireDate),
+            visaIssueDate: reformatDate(visaIssueDate),
+            dateofArrival: reformatDate(dateofArrival),
+            donorVisaExpireDate: reformatDate(donorVisaExpireDate),
+            donorVisaIssueDate: reformatDate(donorVisaIssueDate),
+            attendantVisaExpireDate: reformatDate(attendantVisaExpireDate),
+            attendantVisaIssueDate: reformatDate(attendantVisaIssueDate),
+            attendant2VisaExpireDate: reformatDate(attendant2VisaExpireDate),
+            attendant2VisaIssueDate: reformatDate(attendant2VisaIssueDate),
+            // others dates
+            committeeDate: reformatDate(committeeDate),
+            admissionDate: reformatDate(admissionDate),
+            surgeryDate: reformatDate(surgeryDate),
+            dischargeDate: reformatDate(dischargeDate),
+            returnTicket: reformatDate(returnTicket),
+
         };
+        console.log(edittingObj);
         (async function () {
             const editResponse = await axios.put(`${API_URL}/api/patients/${patientID}`, edittingObj);
             if (editResponse.status === 200) {
@@ -109,31 +125,31 @@ export default function EditPatient({ params }) {
         }
     }
 
-    const DownloadPassport = async () => {
-        const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
-        const modifiedString = currentPatientDetails.patientPassport.replace("/uploads/passports/", "");
-        axios.get(pictureUrl, {
-            responseType: 'arraybuffer' // Specify responseType as 'arraybuffer' to handle binary data
-        })
-            .then((response) => {
-                // Create a blob from the binary data
-                const blob = new Blob([response.data]);
+    // const DownloadPassport = async () => {
+    //     const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
+    //     const modifiedString = currentPatientDetails.patientPassport.replace("/uploads/passports/", "");
+    //     axios.get(pictureUrl, {
+    //         responseType: 'arraybuffer' // Specify responseType as 'arraybuffer' to handle binary data
+    //     })
+    //         .then((response) => {
+    //             // Create a blob from the binary data
+    //             const blob = new Blob([response?.data]);
 
-                // Create a URL for the blob
-                const url = window.URL.createObjectURL(blob);
+    //             // Create a URL for the blob
+    //             const url = window.URL.createObjectURL(blob);
 
-                // Create a download link for the blob
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', modifiedString); // Specify the desired filename for the download
-                document.body.appendChild(link);
-                link.click();
+    //             // Create a download link for the blob
+    //             const link = document.createElement('a');
+    //             link.href = url;
+    //             link.setAttribute('download', modifiedString); // Specify the desired filename for the download
+    //             document.body.appendChild(link);
+    //             link.click();
 
-                // Cleanup by revoking the blob URL
-                window.URL.revokeObjectURL(url);
-            })
-            .catch((error) => console.log(error));
-    }
+    //             // Cleanup by revoking the blob URL
+    //             window.URL.revokeObjectURL(url);
+    //         })
+    //         .catch((error) => console.log(error));
+    // }
 
     return (
         <CheckUserRole allowedRoles={['admin', 'developer']}>
@@ -552,9 +568,10 @@ export default function EditPatient({ params }) {
                                     <Button
                                         variant="contained"
                                         sx={{ mt: 2, mb: 1 }}
-                                        onClick={DownloadPassport}
-                                    >
-                                        <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
+                                    // onClick={DownloadPassport}
+                                    >   <a href={API_URL + currentPatientDetails.patientPassport}>
+                                            <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
+                                        </a>
                                     </Button>
 
                                     <Button
