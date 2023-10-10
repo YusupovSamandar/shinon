@@ -17,7 +17,7 @@ export const patientsList = createSlice({
         updateValue: (state, action) => {
             let currentKey = action.payload.toLowerCase();
 
-            state.value = allPTS.filter(pt => pt.fullName.toLowerCase().includes(currentKey) || pt.nameOfDonor.toLowerCase().includes(currentKey));
+            state.value = allPTS.filter(pt => pt.fullName.toLowerCase().includes(currentKey) || pt.nameOfDonor.toLowerCase().includes(currentKey) || pt?.patientUHID.includes(currentKey));
         },
         updateByStatus: (state, action) => {
             const filterState = action.payload
