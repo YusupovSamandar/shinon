@@ -118,6 +118,12 @@ export default function AddPatient() {
 
         }
 
+        const formatVisaExpireDate = (date) => {
+            const chosenDate = new Date(reformatDate(date));
+            chosenDate.setHours(23, 59, 59, 999);
+            return chosenDate.toISOString();
+        }
+
         const formData = new FormData();
         formData.append('fullName', patientDetails.fullName.trim());
         formData.append('nameOfDonor', patientDetails.nameOfDonor.trim());
@@ -134,7 +140,7 @@ export default function AddPatient() {
         formData.append('speciality', patientDetails.speciality.trim());
         formData.append('doctorDetails', patientDetails.doctorDetails.trim());
         // dates
-        formData.append('dateOfVisaExpiry', reformatDate(visaExpireDate));
+        formData.append('dateOfVisaExpiry', formatVisaExpireDate(visaExpireDate));
         formData.append('visaIssueDate', reformatDate(visaIssueDate));
         formData.append('dateofArrival', reformatDate(dateofArrival));
         formData.append('donorVisaExpireDate', reformatDate(donorVisaExpireDate));

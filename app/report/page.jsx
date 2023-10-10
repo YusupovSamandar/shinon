@@ -101,6 +101,7 @@ export default function Report() {
         setFetchingStartDate(yesterday);
 
         const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
 
         (async function () {
             await fetchReportUpdates(yesterday, endOfToday);

@@ -26,7 +26,7 @@ export default function AddUser({ setCurrentTab }) {
 
     const saveNewUser = async () => {
         setAddButtonTxt("Saving...");
-        const response = await axios.post(`${API_URL}/api/users`, { ...newUser, role: userRole });
+        const response = await axios.post(`${API_URL}/api/users`, { login: newUser.login.trim(), password: newUser.password.trim(), role: userRole });
         if (response.status === 200) {
             setAddButtonTxt("Add New User");
             dispatch(fetchAllUsers());

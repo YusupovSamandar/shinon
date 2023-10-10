@@ -44,7 +44,14 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
     const [loadLabel, setLoadLabel] = useState("load more")
     const loadMoreUpdates = async () => {
         setLoadLabel('loading...');
-        const restUpdates = await axios.post(`${API_URL}/api/updates/load/${patientID}`, { numberOfDataToLoad: 3, page: pageToLoad });
+        const thisDate = new Date();
+        const endOfDay = new Date(thisDate);
+        endOfDay.setHours(0, 0, 0, 0);
+        const restUpdates = await axios.post(`${API_URL}/api/updates/load/${patientID}`, {
+            numberOfDataToLoad: 3,
+            page: pageToLoad,
+            myEndDate: endOfDay
+        });
         if (restUpdates.status === 200) {
             setPatientUpdates((prev) => [...prev, ...restUpdates.data]);
             setPageToLoad((prev) => prev + 1);
@@ -149,9 +156,17 @@ export default function CurrentPatient({ params }) {
     const [patientUpdates, setPatientUpdates] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
     useEffect(() => {
+        const thisDate = new Date();
+        const startOfDay = new Date(thisDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(thisDate);
+        endOfDay.setHours(23, 59, 59, 999);
         (async function () {
             const { data } = await axios.get(`${API_URL}/api/patients/${patientID}`);
-            const { data: thisPatientUpdate } = await axios.get(`${API_URL}/api/updates/${patientID}`);
+            const { data: thisPatientUpdate } = await axios.post(`${API_URL}/api/updates/initial/${patientID}`, {
+                myStartDate: startOfDay,
+                myEndDate: endOfDay
+            });
             setPatientUpdates(thisPatientUpdate);
 
             setPatientDetails(data);
