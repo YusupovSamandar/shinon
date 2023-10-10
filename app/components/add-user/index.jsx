@@ -43,7 +43,7 @@ export default function AddUser({ setCurrentTab }) {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // saveNewUser();
+        saveNewUser();
     };
 
     return (
