@@ -26,11 +26,12 @@ export const warningMessagesList = createSlice({
                     goto: `/patient/edit/${currPt._id}`,
                     message: tempMessage
                 }
-
-                if (timeDifferenceInDays <= 3) {
-                    newValueForMSGs.push({ ...newMsg, messageSeverity: 'error' });
-                } else if (timeDifferenceInDays <= 7) {
-                    newValueForMSGs.push({ ...newMsg, messageSeverity: 'warning' });
+                if (!currPt?.extendingVisa) {
+                    if (timeDifferenceInDays <= 7) {
+                        newValueForMSGs.push({ ...newMsg, messageSeverity: 'error' });
+                    } else if (timeDifferenceInDays <= 15) {
+                        newValueForMSGs.push({ ...newMsg, messageSeverity: 'warning' });
+                    }
                 }
             }
             state.value = newValueForMSGs

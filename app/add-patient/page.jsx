@@ -21,6 +21,11 @@ import axios from '@/app/axiosInstance';
 import { API_URL } from '../apiConfig';
 import { CheckUserRole } from '../routerGuard';
 import SectionTitle from '../components/section-title';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
+
 
 function UploadButtons({ receivedImg, setReceivedImg, customID, acceptFiles }) {
 
@@ -106,6 +111,7 @@ export default function AddPatient() {
     }
 
     const [patientDetails, setPatientDetails] = React.useState(initialPatientSchema);
+    const [thisPTType, setThisPTType] = React.useState('transplant');
     const [buttonLabel, setButtonLabel] = React.useState("confirm")
 
     const handleSubmit = async (event) => {
@@ -126,6 +132,7 @@ export default function AddPatient() {
 
         const formData = new FormData();
         formData.append('fullName', patientDetails.fullName.trim());
+        formData.append('typeOfPatient', thisPTType);
         formData.append('nameOfDonor', patientDetails.nameOfDonor.trim());
         formData.append('patientUHID', patientDetails.patientUHID.trim());
         formData.append('donorUHID', patientDetails.donorUHID.trim());
@@ -208,6 +215,20 @@ export default function AddPatient() {
                         <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1 }} autoComplete="off">
                             <SectionTitle value={"Patient"} />
                             <section>
+                                <InputLabel id="patient-type-label">Patient type</InputLabel>
+                                <Select
+                                    labelId="patient-type-label"
+                                    id="patient-type"
+                                    value={thisPTType}
+                                    fullWidth
+                                    label="Patient Type"
+                                    onChange={(e) => {
+                                        setThisPTType(e.target.value);
+                                    }}
+                                >
+                                    <MenuItem value={'transplant'}>Transplant</MenuItem>
+                                    <MenuItem value={'non-transplant'}>Non-Transplant</MenuItem>
+                                </Select>
                                 <TextField
                                     margin="normal"
                                     required
@@ -341,66 +362,71 @@ export default function AddPatient() {
                                 <UploadButtons acceptFiles={".pdf"} receivedImg={passportImg} setReceivedImg={setPassportImg} customID={"passport-upload"} />
                             </section>
                             <br /><br />
+                            {
+                                thisPTType !== "non-transplant" &&
+                                <div>
+                                    <SectionTitle value={"Donor"} />
+                                    <section>
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            onChange={(e) => {
+                                                setPatientDetails((prev) => {
+                                                    return { ...prev, nameOfDonor: e.target.value }
+                                                });
+                                            }}
+                                            value={patientDetails.nameOfDonor}
+                                            name="donor"
+                                            label="Donor's Name"
+                                            id="donor"
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            required
+                                            fullWidth
+                                            onChange={(e) => {
+                                                setPatientDetails((prev) => {
+                                                    return { ...prev, donorUHID: e.target.value }
+                                                });
+                                            }}
+                                            value={patientDetails.donorUHID}
+                                            name="donorUHID"
+                                            label="Donor's UHID"
+                                            id="donorUHID"
+                                        />
+                                        <TextField
+                                            margin="normal"
+                                            fullWidth
+                                            onChange={(e) => {
+                                                setPatientDetails((prev) => {
+                                                    return { ...prev, donorPassportNumber: e.target.value }
+                                                });
+                                            }}
+                                            value={patientDetails.donorPassportNumber}
+                                            name="donorPassportNumber"
+                                            label="Donor's Passport Number"
+                                            id="donorPassportNumber"
+                                        />
 
-                            <SectionTitle value={"Donor"} />
-                            <section>
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setPatientDetails((prev) => {
-                                            return { ...prev, nameOfDonor: e.target.value }
-                                        });
-                                    }}
-                                    value={patientDetails.nameOfDonor}
-                                    name="donor"
-                                    label="Donor's Name"
-                                    id="donor"
-                                />
-                                <TextField
-                                    margin="normal"
-                                    required
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setPatientDetails((prev) => {
-                                            return { ...prev, donorUHID: e.target.value }
-                                        });
-                                    }}
-                                    value={patientDetails.donorUHID}
-                                    name="donorUHID"
-                                    label="Donor's UHID"
-                                    id="donorUHID"
-                                />
-                                <TextField
-                                    margin="normal"
-                                    fullWidth
-                                    onChange={(e) => {
-                                        setPatientDetails((prev) => {
-                                            return { ...prev, donorPassportNumber: e.target.value }
-                                        });
-                                    }}
-                                    value={patientDetails.donorPassportNumber}
-                                    name="donorPassportNumber"
-                                    label="Donor's Passport Number"
-                                    id="donorPassportNumber"
-                                />
+                                        <DatePicker
+                                            sx={{ margin: "16px 0 8px 0" }}
+                                            margin="normal"
+                                            label="Donor Visa Expire Date"
+                                            value={donorVisaExpireDate}
+                                            onChange={(newValue) => setDonorVisaExpireDateValue(newValue)}
+                                        />
+                                        <DatePicker
+                                            sx={{ margin: "16px 0 8px 0" }}
+                                            margin="normal"
+                                            label="Donor Visa Issue Date"
+                                            value={donorVisaIssueDate}
+                                            onChange={(newValue) => setDonorVisaIssueDate(newValue)}
+                                        />
+                                    </section>
+                                </div>
+                            }
 
-                                <DatePicker
-                                    sx={{ margin: "16px 0 8px 0" }}
-                                    margin="normal"
-                                    label="Donor Visa Expire Date"
-                                    value={donorVisaExpireDate}
-                                    onChange={(newValue) => setDonorVisaExpireDateValue(newValue)}
-                                />
-                                <DatePicker
-                                    sx={{ margin: "16px 0 8px 0" }}
-                                    margin="normal"
-                                    label="Donor Visa Issue Date"
-                                    value={donorVisaIssueDate}
-                                    onChange={(newValue) => setDonorVisaIssueDate(newValue)}
-                                />
-                            </section>
                             <SectionTitle value={"Attendant 1"} />
                             <section>
                                 <TextField

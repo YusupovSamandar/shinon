@@ -5,7 +5,11 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+
+
 import Checkbox from '@mui/material/Checkbox';
 
 const Accordion = styled((props) => (
@@ -47,9 +51,23 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
 export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem3, groupItem4 }) {
     const [expanded, setExpanded] = React.useState('panel1');
 
+    const [workupTestVal, setWorkupTestVal] = React.useState('');
+
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
     };
+
+    const handleAddNewAnalysis = (objParam) => {
+        groupItem1.setCurrentStatus((prev) => {
+            const newVAL = { ...prev };
+            newVAL[objParam].details.push({
+                analysis: workupTestVal,
+                done: false
+            });
+            return newVAL;
+        });
+        setWorkupTestVal('');
+    }
 
     return (
         <div>
@@ -72,6 +90,23 @@ export default function CustomizedAccordions({ groupItem1, groupItem2, groupItem
                 </AccordionSummary>
                 <AccordionDetails>
                     {groupItem1.content}
+                    <Divider light />
+
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", marginTop: "5px" }}>
+                        <TextField
+                            id="filled-basic"
+                            label="Analysis"
+                            variant="filled"
+                            value={workupTestVal}
+                            onChange={(e) => {
+                                setWorkupTestVal(e.target.value);
+                            }}
+                        />
+                        <Button variant="contained" onClick={() => {
+                            handleAddNewAnalysis("preWorkup")
+                        }}>add</Button>
+                    </div>
+
                 </AccordionDetails>
             </Accordion>
             <Accordion TransitionProps={{ unmountOnExit: true }} expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
