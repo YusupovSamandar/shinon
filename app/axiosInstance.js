@@ -15,8 +15,7 @@ axiosInstance.interceptors.response.use((response) => {
         window.location.href = '/restricted';
 
     } else {
-        console.log(error)
-        // window.location.href = '/not-found';
+        window.location.href = '/not-found';
     }
 });
 
