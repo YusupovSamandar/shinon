@@ -139,31 +139,12 @@ export default function EditPatient({ params }) {
         }
     }
 
-    // const DownloadPassport = async () => {
-    //     const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
-    //     const modifiedString = currentPatientDetails.patientPassport.replace("/uploads/passports/", "");
-    //     axios.get(pictureUrl, {
-    //         responseType: 'arraybuffer' // Specify responseType as 'arraybuffer' to handle binary data
-    //     })
-    //         .then((response) => {
-    //             // Create a blob from the binary data
-    //             const blob = new Blob([response?.data]);
-
-    //             // Create a URL for the blob
-    //             const url = window.URL.createObjectURL(blob);
-
-    //             // Create a download link for the blob
-    //             const link = document.createElement('a');
-    //             link.href = url;
-    //             link.setAttribute('download', modifiedString); // Specify the desired filename for the download
-    //             document.body.appendChild(link);
-    //             link.click();
-
-    //             // Cleanup by revoking the blob URL
-    //             window.URL.revokeObjectURL(url);
-    //         })
-    //         .catch((error) => console.log(error));
-    // }
+    const downloadPatientPassport = async () => {
+        // const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
+        const { data: passportUrl } = await axios.get(`${API_URL}/api/patients/passport/${patientID}`);
+        // const modifiedString = currentPatientDetails.patientPassport.replace("passports/", "");
+        window.open(passportUrl.url, '_blank')
+    }
 
     return (
         <CheckUserRole allowedRoles={['admin', 'developer']}>
@@ -601,10 +582,9 @@ export default function EditPatient({ params }) {
                                         currentPatientDetails.patientPassport !== "none" && <Button
                                             variant="contained"
                                             sx={{ mt: 2, mb: 1 }}
-                                        // onClick={DownloadPassport}
-                                        >   <a href={API_URL + currentPatientDetails.patientPassport}>
-                                                <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
-                                            </a>
+                                            onClick={downloadPatientPassport}
+                                        >
+                                            <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
                                         </Button>
                                     }
 

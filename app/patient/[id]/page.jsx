@@ -168,7 +168,6 @@ export default function CurrentPatient({ params }) {
                 myEndDate: endOfDay
             });
             setPatientUpdates(thisPatientUpdate);
-
             setPatientDetails(data);
         })()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -187,7 +186,7 @@ export default function CurrentPatient({ params }) {
                                     </IconButton>
                                 </Link>
                                 <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                                    <Avatar sx={{ width: 50, height: 50 }} alt={patientDetails.fullName} src={`${API_URL}${patientDetails.patientPicture}`} />
+                                    <Avatar sx={{ width: 50, height: 50 }} alt={patientDetails.fullName} src={`${patientDetails.patientPictureURL}`} />
                                     <Typography component="div">
                                         {patientDetails.fullName}
                                     </Typography>
