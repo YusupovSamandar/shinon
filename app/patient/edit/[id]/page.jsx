@@ -17,14 +17,539 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from '@/app/axiosInstance';
 import { API_URL } from '@/app/apiConfig';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { CheckUserRole } from '@/app/routerGuard';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import LabTabs from '@/app/components/patient-edit-tabs';
+import Stack from "@mui/material/Stack";
+import PreviewIcon from '@mui/icons-material/Preview';
+import ImgButton from '@/app/components/imgButton';
 
 import SectionTitle from '@/app/components/section-title';
 
 const defaultTheme = createTheme();
+
+function UploadButtons({ receivedImg, setReceivedImg, customID, acceptFiles }) {
+
+    const handleFileUpload = (event) => {
+        const file = event.target.files[0];
+        setReceivedImg(file);
+    };
+
+    return (
+        <Stack direction="row" alignItems="center" spacing={2}>
+            <label htmlFor={customID}>
+                <ImgButton
+                    acceptFiles={acceptFiles}
+                    currentImage={{
+                        url: receivedImg,
+                        title: receivedImg ? 'change file' : acceptFiles === ".pdf" ? receivedImg?.name || "upload pdf file" : 'select image',
+                    }} />
+                <p style={{ width: '150px' }}>{receivedImg ? "uploading..." : "chosen file: none"}</p>
+
+                <input
+                    id={customID}
+                    hidden
+                    accept={acceptFiles}
+                    type="file"
+                    onChange={handleFileUpload}
+                />
+            </label>
+        </Stack>
+    );
+}
+
+const BasicInputs = ({ currentPatientDetails, setCurrentPatientDetails, setButtonLabel }) => {
+    return (
+        <section>
+            <SectionTitle value={"Patient"} />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.fullName}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, fullName: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+                }}
+                id="fullName"
+                label="Patient's Full Name"
+                name="fullName"
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.patientUHID}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, patientUHID: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+                }}
+                id="patientUHID"
+                label="Patient's UHID"
+                name="patientUHID"
+
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.passportNumber}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, passportNumber: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="passportNumber"
+                label="Patient's passport Number"
+                name="passportNumber"
+
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.doctorDetails}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, doctorDetails: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="doctorDetails"
+                label="Patient's doctor Details"
+                name="doctorDetails"
+
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.country}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, country: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="country"
+                label="Patient's Country"
+                name="country"
+
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.hospital}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, hospital: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="hospital"
+                label="Patient's Hospital"
+                name="hospital"
+
+            />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.speciality}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, speciality: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="speciality"
+                label="Patient's Speciality"
+                name="speciality"
+
+            />
+            {
+                currentPatientDetails.typeOfPatient !== "non-transplant" &&
+                <div>
+                    <SectionTitle value={"Donor"} />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        required
+                        onChange={(e) => {
+                            setCurrentPatientDetails((prev) => {
+                                return { ...prev, nameOfDonor: e.target.value }
+                            });
+                            setButtonLabel("Confirm");
+
+                        }}
+                        value={currentPatientDetails.nameOfDonor}
+                        name="donor"
+                        label="Donor's Name"
+                        id="donor"
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        onChange={(e) => {
+                            setCurrentPatientDetails((prev) => {
+                                return { ...prev, donorUHID: e.target.value }
+                            });
+                            setButtonLabel("Confirm");
+
+                        }}
+                        value={currentPatientDetails.donorUHID}
+                        name="donorUHID"
+                        label="Donor's UHID"
+                        id="donorUHID"
+                    />
+                    <TextField
+                        margin="normal"
+                        fullWidth
+                        onChange={(e) => {
+                            setCurrentPatientDetails((prev) => {
+                                return { ...prev, donorPassportNumber: e.target.value }
+                            });
+                            setButtonLabel("Confirm");
+
+                        }}
+                        value={currentPatientDetails.donorPassportNumber}
+                        name="donorPassportNumber"
+                        label="Donor's Passport Number"
+                        id="donorPassportNumber"
+                    />
+                </div>
+            }
+            <SectionTitle value={"Attendant 1"} />
+            <div>
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    onChange={(e) => {
+                        setCurrentPatientDetails((prev) => {
+                            return { ...prev, nameOfAttendant: e.target.value }
+                        });
+                        setButtonLabel("Confirm");
+                    }}
+                    value={currentPatientDetails.nameOfAttendant}
+                    name="nameOfAttendant"
+                    label="Attendant's Name"
+                    id="nameOfAttendant"
+                />
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    onChange={(e) => {
+                        setCurrentPatientDetails((prev) => {
+                            return { ...prev, attendantPassportNumber: e.target.value }
+                        });
+                        setButtonLabel("Confirm");
+                    }}
+                    value={currentPatientDetails.attendantPassportNumber}
+                    name="attendantPassportNumber"
+                    label="Attendant's Passport Number"
+                    id="attendantPassportNumber"
+                />
+            </div>
+            <SectionTitle value={"Attendant 2"} />
+            <div>
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    onChange={(e) => {
+                        setCurrentPatientDetails((prev) => {
+                            return { ...prev, nameOfAttendant2: e.target.value }
+                        });
+                        setButtonLabel("Confirm");
+                    }}
+                    value={currentPatientDetails.nameOfAttendant2}
+                    name="nameOfAttendant2"
+                    label="Second Attendant's Name"
+                    id="nameOfAttendant2"
+                />
+                <TextField
+                    margin="normal"
+                    fullWidth
+                    onChange={(e) => {
+                        setCurrentPatientDetails((prev) => {
+                            return { ...prev, attendant2PassportNumber: e.target.value }
+                        });
+                        setButtonLabel("Confirm");
+                    }}
+                    value={currentPatientDetails.attendantPassportNumber}
+                    name="attendant2PassportNumber"
+                    label="Second Attendant's Passport Number"
+                    id="attendant2PassportNumber"
+                />
+
+            </div>
+        </section>
+    )
+}
+
+const DateInputs = ({ currentPatientDetails, setButtonLabel, visaDateVals }) => {
+    return (
+        <section>
+            <SectionTitle value={"Patient"} />
+            <DatePicker
+                sx={{ margin: "16px 0 8px 0" }}
+                margin="normal"
+                label="Visa Expiration Date"
+                value={visaDateVals.visaExpireDate}
+                onChange={(newValue) => {
+                    visaDateVals.setVisaExpireDateValue(newValue)
+                    setButtonLabel("Confirm");
+                }}
+            />
+            <DatePicker
+                sx={{ margin: "16px 0 8px 0" }}
+                margin="normal"
+                label="Visa Issue Date"
+                value={visaDateVals.visaIssueDate}
+                onChange={(newValue) => {
+                    visaDateVals.setVisaIssueDate(newValue);
+                    setButtonLabel("Confirm");
+                }}
+            />
+            <DatePicker
+                sx={{ margin: "16px 0 8px 0" }}
+                margin="normal"
+                label="Date of Arrival"
+                value={visaDateVals.dateofArrival}
+                onChange={(newValue) => {
+                    visaDateVals.setDateofArrival(newValue);
+                    setButtonLabel("Confirm");
+                }}
+            />
+            {
+                currentPatientDetails.typeOfPatient !== "non-transplant" &&
+                <div>
+                    <SectionTitle value={"Donor"} />
+                    <section>
+                        <DatePicker
+                            sx={{ margin: "16px 0 8px 0" }}
+                            margin="normal"
+                            label="Donor Visa Expire Date"
+                            value={visaDateVals.donorVisaExpireDate}
+                            onChange={(newValue) => {
+                                visaDateVals.setDonorVisaExpireDateValue(newValue)
+                                setButtonLabel("Confirm");
+                            }}
+                        />
+                        <DatePicker
+                            sx={{ margin: "16px 0 8px 0" }}
+                            margin="normal"
+                            label="Donor Visa Issue Date"
+                            value={visaDateVals.donorVisaIssueDate}
+                            onChange={(newValue) => {
+                                visaDateVals.setDonorVisaIssueDate(newValue)
+                                setButtonLabel("Confirm");
+                            }}
+                        />
+                    </section>
+                </div>
+            }
+            <SectionTitle value={"Attendant 1"} />
+            <section>
+
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Attendant Visa Expire Date"
+                    value={visaDateVals.attendantVisaExpireDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setAttendantVisaExpireDateValue(newValue)
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Attendant Visa Issue Date"
+                    value={visaDateVals.attendantVisaIssueDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setAttendantVisaIssueDate(newValue)
+                        setButtonLabel("Confirm");
+                    }}
+                />
+            </section>
+            <SectionTitle value={"Attendant 2"} />
+            <section>
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Second Attendant Visa Expire Date"
+                    value={visaDateVals.attendant2VisaExpireDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setAttendant2VisaExpireDateValue(newValue);
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Second Attendant Visa Issue Date"
+                    value={visaDateVals.attendant2VisaIssueDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setAttendant2VisaIssueDate(newValue);
+                        setButtonLabel("Confirm");
+                    }}
+                />
+            </section>
+            <SectionTitle value={"Progress Based Dates"} />
+            <section>
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Committee Date"
+                    value={visaDateVals.committeeDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setCommitteeDate(newValue)
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Admission Date"
+                    value={visaDateVals.admissionDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setAdmissionDate(newValue)
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="surgery Date"
+                    value={visaDateVals.surgeryDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setSurgeryDate(newValue);
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Discharge Date"
+                    value={visaDateVals.dischargeDate}
+                    onChange={(newValue) => {
+                        visaDateVals.setDischargeDate(newValue);
+                        setButtonLabel("Confirm");
+                    }}
+                />
+                <DatePicker
+                    sx={{ margin: "16px 0 8px 0" }}
+                    margin="normal"
+                    label="Return Ticket"
+                    value={visaDateVals.returnTicket}
+                    onChange={(newValue) => {
+                        visaDateVals.setReturnTicket(newValue)
+                        setButtonLabel("Confirm");
+                    }}
+                />
+
+            </section>
+        </section>
+    )
+}
+
+const FileUploads = ({ currentPatientDetails, patientID, setCurrentPatientDetails }) => {
+    const [dischargeSummary, setDischargeSummary] = React.useState(null);
+    const [patientPassport, setPatientPassport] = React.useState(null);
+    const downloadPatientPassport = async () => {
+        // const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
+        const { data: passportUrl } = await axios.get(`${API_URL}/api/patients/passport/${patientID}`);
+        // const modifiedString = currentPatientDetails.patientPassport.replace("passports/", "");
+        window.open(passportUrl.url, '_blank')
+    }
+    const downloadPatientSummary = async () => {
+        // const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
+        const { data: passportUrl } = await axios.get(`${API_URL}/api/patients/summary/${patientID}`);
+        // const modifiedString = currentPatientDetails.patientPassport.replace("passports/", "");
+        window.open(passportUrl.url, '_blank')
+    }
+
+    const uploadFile = async (fileName, uPfile, setSt) => {
+        const uploadUrl = fileName === "patientPassport" ? "passport" : "summary"
+        const formData = new FormData();
+        formData.append(fileName, uPfile);
+        const saveResponse = await axios.post(`${API_URL}/api/patients/${uploadUrl}/${patientID}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        if (saveResponse.status === 200) {
+            setSt(null);
+            setCurrentPatientDetails((prev) => {
+                return { ...prev, [fileName]: saveResponse.data.uploadedFileName }
+            })
+        }
+    }
+
+    React.useEffect(() => {
+        if (patientPassport) {
+            uploadFile("patientPassport", patientPassport, setPatientPassport);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [patientPassport])
+
+    React.useEffect(() => {
+        if (dischargeSummary) {
+            uploadFile("dischargeSummary", dischargeSummary, setDischargeSummary);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dischargeSummary])
+
+    return (
+        <section>
+            <div style={{ width: "100%" }}>
+                <SectionTitle value={"Patient Files"} />
+                {currentPatientDetails.patientPassport !== "none" &&
+                    <div>
+                        <Button
+                            variant="contained"
+                            sx={{ mt: 2, mb: 1 }}
+                            onClick={downloadPatientPassport}
+                        >
+                            <PreviewIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
+                        </Button>
+                    </div>
+                }
+                {currentPatientDetails?.dischargeSummary &&
+                    <div>
+                        <Button
+                            variant="contained"
+                            sx={{ mt: 2, mb: 1 }}
+                            onClick={downloadPatientSummary}
+                        >
+                            <PreviewIcon fontSize='small' style={{ marginRight: "10px" }} />      Discharge Summary
+                        </Button>
+                    </div>
+                }
+                <br />
+                <br />
+                <p>Passport: </p>
+                <UploadButtons acceptFiles={".pdf"} receivedImg={patientPassport} setReceivedImg={setPatientPassport} customID={"passport-upload"} />
+                <br />
+                <p>Discharge Summary</p>
+                <UploadButtons acceptFiles={".pdf"} receivedImg={dischargeSummary} setReceivedImg={setDischargeSummary} customID={"dischargeSummary-upload"} />
+            </div>
+        </section>
+    )
+}
 
 export default function EditPatient({ params }) {
     const router = useRouter()
@@ -55,6 +580,7 @@ export default function EditPatient({ params }) {
     React.useEffect(() => {
         (async function () {
             const { data } = await axios.get(`${API_URL}/api/patients/${patientID}`);
+            console.log(data);
             setCurrentPatientDetails(data);
 
             const date = new Date(data.dateOfVisaExpiry);
@@ -139,13 +665,6 @@ export default function EditPatient({ params }) {
         }
     }
 
-    const downloadPatientPassport = async () => {
-        // const pictureUrl = `${API_URL}${currentPatientDetails.patientPassport}`;
-        const { data: passportUrl } = await axios.get(`${API_URL}/api/patients/passport/${patientID}`);
-        // const modifiedString = currentPatientDetails.patientPassport.replace("passports/", "");
-        window.open(passportUrl.url, '_blank')
-    }
-
     return (
         <CheckUserRole allowedRoles={['admin', 'developer']}>
             <ThemeProvider theme={defaultTheme}>
@@ -178,7 +697,7 @@ export default function EditPatient({ params }) {
                                 {
                                     currentPatientDetails.patientPicture !== "none" && <Avatar sx={{ width: 50, height: 50 }} alt={currentPatientDetails.fullName} src={`${API_URL}${currentPatientDetails.patientPicture}`} />
                                 }
-                                <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1 }}>
+                                <Box component="form" onSubmit={handleSubmit} noValidate={false} sx={{ mt: 1, width: "100%" }}>
                                     <FormControlLabel
                                         control={
                                             <Switch checked={currentPatientDetails.extendingVisa} onChange={(ev) => {
@@ -190,405 +709,47 @@ export default function EditPatient({ params }) {
                                         }
                                         label="Visa Extension in proccess"
                                     />
-                                    <SectionTitle value={"Patient"} />
-                                    <section>
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.fullName}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, fullName: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            id="fullName"
-                                            label="Patient's Full Name"
-                                            name="fullName"
-                                            autoFocus
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.patientUHID}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, patientUHID: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            id="patientUHID"
-                                            label="Patient's UHID"
-                                            name="patientUHID"
-
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.passportNumber}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, passportNumber: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-
-                                            }}
-                                            id="passportNumber"
-                                            label="Patient's passport Number"
-                                            name="passportNumber"
-
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.doctorDetails}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, doctorDetails: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-
-                                            }}
-                                            id="doctorDetails"
-                                            label="Patient's doctor Details"
-                                            name="doctorDetails"
-
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.country}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, country: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-
-                                            }}
-                                            id="country"
-                                            label="Patient's Country"
-                                            name="country"
-
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.hospital}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, hospital: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-
-                                            }}
-                                            id="hospital"
-                                            label="Patient's Hospital"
-                                            name="hospital"
-
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            required
-                                            fullWidth
-                                            value={currentPatientDetails.speciality}
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, speciality: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-
-                                            }}
-                                            id="speciality"
-                                            label="Patient's Speciality"
-                                            name="speciality"
-
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Visa Expiration Date"
-                                            value={visaExpireDate}
-                                            onChange={(newValue) => {
-                                                setVisaExpireDateValue(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Visa Issue Date"
-                                            value={visaIssueDate}
-                                            onChange={(newValue) => {
-                                                setVisaIssueDate(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Date of Arrival"
-                                            value={dateofArrival}
-                                            onChange={(newValue) => {
-                                                setDateofArrival(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                    </section>
-                                    {
-                                        currentPatientDetails.typeOfPatient !== "non-transplant" &&
-                                        <div>
-                                            <SectionTitle value={"Donor"} />
-                                            <section>
-                                                <TextField
-                                                    margin="normal"
-                                                    fullWidth
-                                                    required
-                                                    onChange={(e) => {
-                                                        setCurrentPatientDetails((prev) => {
-                                                            return { ...prev, nameOfDonor: e.target.value }
-                                                        });
-                                                        setButtonLabel("Confirm");
-
-                                                    }}
-                                                    value={currentPatientDetails.nameOfDonor}
-                                                    name="donor"
-                                                    label="Donor's Name"
-                                                    id="donor"
-                                                />
-                                                <TextField
-                                                    margin="normal"
-                                                    required
-                                                    fullWidth
-                                                    onChange={(e) => {
-                                                        setCurrentPatientDetails((prev) => {
-                                                            return { ...prev, donorUHID: e.target.value }
-                                                        });
-                                                        setButtonLabel("Confirm");
-
-                                                    }}
-                                                    value={currentPatientDetails.donorUHID}
-                                                    name="donorUHID"
-                                                    label="Donor's UHID"
-                                                    id="donorUHID"
-                                                />
-                                                <TextField
-                                                    margin="normal"
-                                                    fullWidth
-                                                    onChange={(e) => {
-                                                        setCurrentPatientDetails((prev) => {
-                                                            return { ...prev, donorPassportNumber: e.target.value }
-                                                        });
-                                                        setButtonLabel("Confirm");
-
-                                                    }}
-                                                    value={currentPatientDetails.donorPassportNumber}
-                                                    name="donorPassportNumber"
-                                                    label="Donor's Passport Number"
-                                                    id="donorPassportNumber"
-                                                />
-
-                                                <DatePicker
-                                                    sx={{ margin: "16px 0 8px 0" }}
-                                                    margin="normal"
-                                                    label="Donor Visa Expire Date"
-                                                    value={donorVisaExpireDate}
-                                                    onChange={(newValue) => {
-                                                        setDonorVisaExpireDateValue(newValue)
-                                                        setButtonLabel("Confirm");
-                                                    }}
-                                                />
-                                                <DatePicker
-                                                    sx={{ margin: "16px 0 8px 0" }}
-                                                    margin="normal"
-                                                    label="Donor Visa Issue Date"
-                                                    value={donorVisaIssueDate}
-                                                    onChange={(newValue) => {
-                                                        setDonorVisaIssueDate(newValue)
-                                                        setButtonLabel("Confirm");
-                                                    }}
-                                                />
-                                            </section>
-                                        </div>
-                                    }
-
-                                    <SectionTitle value={"Attendant 1"} />
-                                    <section>
-                                        <TextField
-                                            margin="normal"
-                                            fullWidth
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, nameOfAttendant: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            value={currentPatientDetails.nameOfAttendant}
-                                            name="nameOfAttendant"
-                                            label="Attendant's Name"
-                                            id="nameOfAttendant"
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            fullWidth
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, attendantPassportNumber: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            value={currentPatientDetails.attendantPassportNumber}
-                                            name="attendantPassportNumber"
-                                            label="Attendant's Passport Number"
-                                            id="attendantPassportNumber"
-                                        />
-
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Attendant Visa Expire Date"
-                                            value={attendantVisaExpireDate}
-                                            onChange={(newValue) => {
-                                                setAttendantVisaExpireDateValue(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Attendant Visa Issue Date"
-                                            value={attendantVisaIssueDate}
-                                            onChange={(newValue) => {
-                                                setAttendantVisaIssueDate(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                    </section>
-                                    <SectionTitle value={"Attendant 2"} />
-                                    <section>
-                                        <TextField
-                                            margin="normal"
-                                            fullWidth
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, nameOfAttendant2: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            value={currentPatientDetails.nameOfAttendant2}
-                                            name="nameOfAttendant2"
-                                            label="Second Attendant's Name"
-                                            id="nameOfAttendant2"
-                                        />
-                                        <TextField
-                                            margin="normal"
-                                            fullWidth
-                                            onChange={(e) => {
-                                                setCurrentPatientDetails((prev) => {
-                                                    return { ...prev, attendant2PassportNumber: e.target.value }
-                                                });
-                                                setButtonLabel("Confirm");
-                                            }}
-                                            value={currentPatientDetails.attendantPassportNumber}
-                                            name="attendant2PassportNumber"
-                                            label="Second Attendant's Passport Number"
-                                            id="attendant2PassportNumber"
-                                        />
-
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Second Attendant Visa Expire Date"
-                                            value={attendant2VisaExpireDate}
-                                            onChange={(newValue) => {
-                                                setAttendant2VisaExpireDateValue(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Second Attendant Visa Issue Date"
-                                            value={attendant2VisaIssueDate}
-                                            onChange={(newValue) => {
-                                                setAttendant2VisaIssueDate(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                    </section>
-
-                                    <SectionTitle value={"Other Dates"} />
-                                    <section>
-
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Committee Date"
-                                            value={committeeDate}
-                                            onChange={(newValue) => {
-                                                setCommitteeDate(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Admission Date"
-                                            value={admissionDate}
-                                            onChange={(newValue) => {
-                                                setAdmissionDate(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="surgery Date"
-                                            value={surgeryDate}
-                                            onChange={(newValue) => {
-                                                setSurgeryDate(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Discharge Date"
-                                            value={dischargeDate}
-                                            onChange={(newValue) => {
-                                                setDischargeDate(newValue);
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-                                        <DatePicker
-                                            sx={{ margin: "16px 0 8px 0" }}
-                                            margin="normal"
-                                            label="Return Ticket"
-                                            value={returnTicket}
-                                            onChange={(newValue) => {
-                                                setReturnTicket(newValue)
-                                                setButtonLabel("Confirm");
-                                            }}
-                                        />
-
-                                    </section>
-                                    <br />
-                                    {
-                                        currentPatientDetails.patientPassport !== "none" && <Button
-                                            variant="contained"
-                                            sx={{ mt: 2, mb: 1 }}
-                                            onClick={downloadPatientPassport}
-                                        >
-                                            <CloudDownloadIcon fontSize='small' style={{ marginRight: "10px" }} />      passport
-                                        </Button>
-                                    }
-
-
+                                    <LabTabs
+                                        tab1={{ content: <BasicInputs setButtonLabel={setButtonLabel} currentPatientDetails={currentPatientDetails} setCurrentPatientDetails={setCurrentPatientDetails} />, label: "Basics" }}
+                                        tab2={{
+                                            content: <DateInputs
+                                                setButtonLabel={setButtonLabel}
+                                                currentPatientDetails={currentPatientDetails}
+                                                visaDateVals={{
+                                                    visaIssueDate,
+                                                    setVisaIssueDate,
+                                                    dateofArrival,
+                                                    setDateofArrival,
+                                                    visaExpireDate,
+                                                    setVisaExpireDateValue,
+                                                    donorVisaExpireDate,
+                                                    donorVisaIssueDate,
+                                                    attendantVisaExpireDate,
+                                                    attendantVisaIssueDate,
+                                                    attendant2VisaExpireDate,
+                                                    attendant2VisaIssueDate,
+                                                    setDonorVisaExpireDateValue,
+                                                    setDonorVisaIssueDate,
+                                                    setAttendantVisaExpireDateValue,
+                                                    setAttendantVisaIssueDate,
+                                                    setAttendant2VisaExpireDateValue,
+                                                    setAttendant2VisaIssueDate,
+                                                    committeeDate,
+                                                    admissionDate,
+                                                    surgeryDate,
+                                                    dischargeDate,
+                                                    returnTicket,
+                                                    setCommitteeDate,
+                                                    setAdmissionDate,
+                                                    setSurgeryDate,
+                                                    setDischargeDate,
+                                                    setReturnTicket
+                                                }}
+                                            />,
+                                            label: "Dates"
+                                        }}
+                                        tab3={{ content: <FileUploads patientID={patientID} setCurrentPatientDetails={setCurrentPatientDetails} currentPatientDetails={currentPatientDetails} />, label: "Files" }}
+                                    />
                                     <Button
                                         type="submit"
                                         fullWidth

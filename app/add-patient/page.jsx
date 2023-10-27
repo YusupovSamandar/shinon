@@ -516,9 +516,9 @@ export default function AddPatient() {
                                 />
                             </section>
 
-                            <SectionTitle value={"Other Dates"} />
+                            {/* <SectionTitle value={"Other Dates"} /> */}
 
-                            <section>
+                            {/* <section>
 
                                 <DatePicker
                                     sx={{ margin: "16px 0 8px 0" }}
@@ -556,7 +556,7 @@ export default function AddPatient() {
                                     onChange={(newValue) => setReturnTicket(newValue)}
                                 />
 
-                            </section>
+                            </section> */}
 
 
                             <Button
