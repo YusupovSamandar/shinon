@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateState } from '@/app/redux/features/auth-slice';
 import axios from './axiosInstance';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import { API_URL } from './apiConfig';
 
 export const displayForUser = (allowedRoles, currentUserRoles) => {
@@ -14,6 +16,14 @@ export const displayForUser = (allowedRoles, currentUserRoles) => {
         return false;
     }
 
+}
+
+function CircularIndeterminate() {
+    return (
+        <Box sx={{ display: 'flex', justifyContent: "center", position: "fixed", top: 0, left: 0, alignItems: "center", height: "100vh", width: "100vw", backgroundColor: "rgba(0, 0, 0, 0.2)" }}>
+            <CircularProgress />
+        </Box>
+    );
 }
 
 export function CheckUserRole({ children, allowedRoles }) {
@@ -65,5 +75,12 @@ export function CheckUserRole({ children, allowedRoles }) {
     }, [currentUser, allowedRoles, router])
 
 
-    return <>{shouldRenderContent ? children : <div style={{ textAlign: "center" }}>loading...</div>}</>
+    return <>
+        {
+            shouldRenderContent ? children :
+                <div style={{ textAlign: "center" }}>
+                    <CircularIndeterminate />
+                </div>
+        }
+    </>
 }
