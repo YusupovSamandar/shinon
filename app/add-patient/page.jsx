@@ -189,7 +189,7 @@ export default function AddPatient() {
     };
 
     return (
-        <CheckUserRole allowedRoles={['admin', 'developer']}>
+        <CheckUserRole allowedRoles={['admin', 'developer', 'interpreter']}>
             <ThemeProvider theme={defaultTheme}>
                 <Link href="/patients">
                     <IconButton aria-label="delete" size="large">

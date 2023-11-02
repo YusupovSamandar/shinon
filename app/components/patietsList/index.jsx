@@ -82,7 +82,7 @@ export default function BottomAppBar() {
                     </List>
                 </Paper>
             </React.Fragment>
-            {displayForUser(['admin', 'developer'], currentUser?.value?.role) && <HideOnScroll>
+            {displayForUser(['admin', 'developer', 'interpreter'], currentUser?.value?.role) && <HideOnScroll>
                 <div style={{ position: "fixed", bottom: "100px", zIndex: "9999999", right: "90px" }}>
                     <Link href={'/add-patient'}>
                         <StyledFab color="secondary" aria-label="add">
