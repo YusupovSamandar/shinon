@@ -179,6 +179,39 @@ const BasicInputs = ({ currentPatientDetails, setCurrentPatientDetails, setButto
                 name="speciality"
 
             />
+            <TextField
+                margin="normal"
+                required
+                fullWidth
+                value={currentPatientDetails.visaType}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, visaType: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="visaType"
+                label="Patient's visaType"
+                name="visaType"
+
+            />
+            <TextField
+                margin="normal"
+                fullWidth
+                value={currentPatientDetails.phoneNumber}
+                onChange={(e) => {
+                    setCurrentPatientDetails((prev) => {
+                        return { ...prev, phoneNumber: e.target.value }
+                    });
+                    setButtonLabel("Confirm");
+
+                }}
+                id="phoneNumber"
+                label="Patient's Phone Number"
+                name="phoneNumber"
+
+            />
             {
                 currentPatientDetails.typeOfPatient !== "non-transplant" &&
                 <div>

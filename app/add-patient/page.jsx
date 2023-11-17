@@ -97,6 +97,8 @@ export default function AddPatient() {
         fullName: '',
         patientUHID: '',
         donorUHID: '',
+        visaType: '',
+        phoneNumber: '',
         nameOfDonor: '',
         nameOfAttendant: '',
         nameOfAttendant2: '',
@@ -135,6 +137,7 @@ export default function AddPatient() {
         formData.append('typeOfPatient', thisPTType);
         formData.append('nameOfDonor', patientDetails.nameOfDonor.trim());
         formData.append('patientUHID', patientDetails.patientUHID.trim());
+        formData.append('visaType', patientDetails.visaType.trim());
         formData.append('donorUHID', patientDetails.donorUHID.trim());
         formData.append('nameOfAttendant', patientDetails.nameOfAttendant.trim());
         formData.append('nameOfAttendant2', patientDetails.nameOfAttendant2.trim());
@@ -332,6 +335,35 @@ export default function AddPatient() {
                                     id="speciality"
                                     label="Patient's Speciality"
                                     name="speciality"
+
+                                />
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    value={patientDetails.visaType}
+                                    onChange={(e) => {
+                                        setPatientDetails((prev) => {
+                                            return { ...prev, visaType: e.target.value }
+                                        });
+                                    }}
+                                    id="visaType"
+                                    label="Patient's Visa Type"
+                                    name="visaType"
+
+                                />
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    value={patientDetails.phoneNumber}
+                                    onChange={(e) => {
+                                        setPatientDetails((prev) => {
+                                            return { ...prev, phoneNumber: e.target.value }
+                                        });
+                                    }}
+                                    id="phoneNumber"
+                                    label="Patient's Phone Number"
+                                    name="phoneNumber"
 
                                 />
                                 <DatePicker
