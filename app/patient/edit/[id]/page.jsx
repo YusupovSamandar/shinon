@@ -704,11 +704,9 @@ export default function EditPatient({ params }) {
                 {
                     currentPatientDetails &&
                     <div>
-                        <Link href={"/patient/" + patientID}>
-                            <IconButton aria-label="delete" size="large">
-                                <ArrowBackIcon fontSize="inherit" />
-                            </IconButton>
-                        </Link>
+                        <IconButton onClick={() => router.back()} aria-label="delete" size="large">
+                            <ArrowBackIcon fontSize="inherit" />
+                        </IconButton>
                         <Container component="main" maxWidth="xs">
                             <CssBaseline />
                             <Box

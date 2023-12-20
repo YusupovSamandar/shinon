@@ -10,6 +10,7 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { useDispatch } from 'react-redux';
 import { updateValue } from '@/app/redux/features/patientsList-slice';
+import { setValue } from '@/app/redux/features/searchValue-slice';
 
 
 
@@ -56,6 +57,7 @@ export default function TopBar({ openDrawer, toggleSearch }) {
     const dispach = useDispatch();
     const searchPatient = (e) => {
         dispach(updateValue(e.target.value));
+        dispach(setValue(e.target.value));
     }
 
     return (

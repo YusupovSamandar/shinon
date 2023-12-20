@@ -20,6 +20,8 @@ import axios from '@/app/axiosInstance';
 import { displayForUser } from '@/app/routerGuard';
 import { useSelector } from 'react-redux';
 import { CheckUserRole } from '@/app/routerGuard';
+import { useRouter } from 'next/navigation';
+
 
 function formatUpdatesDate(date) {
     date = new Date(date);
@@ -150,6 +152,7 @@ const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRol
 }
 
 export default function CurrentPatient({ params }) {
+    const router = useRouter();
     const patientID = params.id
     const currentUser = useSelector((state) => state.userAuth);
     const [patientDetails, setPatientDetails] = useState(undefined);
@@ -180,11 +183,14 @@ export default function CurrentPatient({ params }) {
                         <div style={{ marginLeft: '16px' }}>
                             <br />
                             <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
-                                <Link href="/patients">
-                                    <IconButton style={{ position: 'relative', right: '10px' }} aria-label="delete" size="large">
-                                        <ArrowBackIcon fontSize="inherit" />
-                                    </IconButton>
-                                </Link>
+                                <IconButton
+                                    onClick={() => router.back()}
+                                    style={{ position: 'relative', right: '10px' }}
+                                    aria-label="delete"
+                                    size="large"
+                                >
+                                    <ArrowBackIcon fontSize="inherit" />
+                                </IconButton>
                                 <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
                                     <Avatar sx={{ width: 50, height: 50 }} alt={patientDetails.fullName} src={`${patientDetails.patientPictureURL}`} />
                                     <Typography component="div">
