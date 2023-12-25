@@ -8,9 +8,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateValue } from '@/app/redux/features/patientsList-slice';
 import { setValue } from '@/app/redux/features/searchValue-slice';
+import NotificationIconBtn from "@/app/chunks/notificationIcon"
 
 
 
@@ -48,12 +49,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         [theme.breakpoints.up('sm')]: {
             width: '12ch',
             '&:focus': {
-                width: '20ch',
+                width: '25ch',
             },
         },
     },
 }));
 export default function TopBar({ openDrawer, toggleSearch }) {
+    const warningMsgs = useSelector((state) => state.warningMessagesList.value);
+
     const dispach = useDispatch();
     const searchPatient = (e) => {
         dispach(updateValue(e.target.value));
@@ -62,11 +65,11 @@ export default function TopBar({ openDrawer, toggleSearch }) {
 
     return (
         <AppBar position="fixed" color="primary" sx={{ bottom: 'auto' }}>
-            <Toolbar>
+            <Toolbar style={{ justifyContent: "space-between", minHeight: "56px" }}>
                 <IconButton onClick={openDrawer} color="inherit" aria-label="open drawer">
                     <MenuIcon />
                 </IconButton>
-                <Box sx={{ flexGrow: 1 }} />
+                {/* <Box sx={{ flexGrow: 1 }} /> */}
                 {
                     toggleSearch && <Search>
                         <SearchIconWrapper>
@@ -79,8 +82,8 @@ export default function TopBar({ openDrawer, toggleSearch }) {
                         />
                     </Search>
                 }
-
+                <NotificationIconBtn number={warningMsgs.length} />
             </Toolbar>
-        </AppBar>
+        </AppBar >
     )
 }

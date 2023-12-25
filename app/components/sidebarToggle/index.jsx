@@ -19,6 +19,7 @@ import { API_URL } from '@/app/apiConfig';
 import axios from '@/app/axiosInstance';
 import SickIcon from '@mui/icons-material/Sick';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 export default function SwipeableTemporaryDrawer({ enableSearch }) {
   const [state, setState] = React.useState(false);
@@ -60,6 +61,7 @@ export default function SwipeableTemporaryDrawer({ enableSearch }) {
         {
           [
             { label: 'Patients', goto: '/patients', icon: <SickIcon /> },
+            { label: 'Notifications', goto: '/notifications', icon: <NotificationsActiveIcon /> },
             { label: 'Report', goto: '/report', icon: <SummarizeIcon /> },
             { label: 'Users', goto: '/users', icon: <GroupIcon /> },
             { label: 'Complete Patients', goto: '/archives', icon: <Diversity1Icon /> },
