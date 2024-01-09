@@ -20,16 +20,22 @@ import { API_URL } from "@/app/apiConfig";
 import { CheckUserRole } from "@/app/routerGuard";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import { useSelector } from "react-redux";
 import LabTabs from "@/app/components/patient-edit-tabs";
 import Stack from "@mui/material/Stack";
 import PreviewIcon from "@mui/icons-material/Preview";
 import ImgButton from "@/app/components/imgButton";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 
 import SectionTitle from "@/app/components/section-title";
 
 const defaultTheme = createTheme();
 
 function UploadButtons({ receivedImg, setReceivedImg, customID, acceptFiles }) {
+
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     setReceivedImg(file);
@@ -70,6 +76,14 @@ const BasicInputs = ({
   setCurrentPatientDetails,
   setButtonLabel,
 }) => {
+  const [hospitalsList, setHospitalsList] = React.useState([]); // patient
+
+  React.useEffect(() => {
+    (async function () {
+      const { data } = await axios.get(`${API_URL}/api/hospitals`);
+      setHospitalsList(data);
+    })();
+  }, []);
   return (
     <section>
       <SectionTitle value={"Patient"} />
@@ -148,21 +162,31 @@ const BasicInputs = ({
         label="Patient's Country"
         name="country"
       />
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        value={currentPatientDetails.hospital}
-        onChange={(e) => {
-          setCurrentPatientDetails((prev) => {
-            return { ...prev, hospital: e.target.value };
-          });
-          setButtonLabel("Confirm");
-        }}
-        id="hospital"
-        label="Patient's Hospital"
-        name="hospital"
-      />
+      <FormControl fullWidth>
+        <InputLabel id="hospital-name-label">
+          Patient&apos;s Hospital
+        </InputLabel>
+        <Select
+          labelId="hospital-name-label"
+          id="hospital-name"
+          value={currentPatientDetails.hospital}
+          fullWidth
+          required
+          label="Patient's Hospital"
+          onChange={(e) => {
+            setCurrentPatientDetails((prev) => {
+              return { ...prev, hospital: e.target.value };
+            });
+            setButtonLabel("Confirm");
+          }}
+        >
+          {hospitalsList.map((hosp) => (
+            <MenuItem key={hosp} value={hosp.hospitalName}>
+              {hosp.hospitalName}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <TextField
         margin="normal"
         required
@@ -602,6 +626,7 @@ const FileUploads = ({
 };
 
 export default function EditPatient({ params }) {
+    const currentUser = useSelector((state) => state.userAuth);
   const router = useRouter();
   const patientID = params.id;
   const [currentPatientDetails, setCurrentPatientDetails] =
@@ -636,7 +661,7 @@ export default function EditPatient({ params }) {
 
   React.useEffect(() => {
     (async function () {
-      const { data } = await axios.get(`${API_URL}/api/patients/${patientID}`);
+      const { data } = await axios.get(`${API_URL}/api/patients/one/${patientID}`);
       console.log(data);
       setCurrentPatientDetails(data);
 
@@ -753,7 +778,7 @@ export default function EditPatient({ params }) {
                 </Avatar>
 
                 <Typography component="h1" variant="h5">
-                  Edit Patient
+                  Patient Details
                 </Typography>
                 <br />
                 <br />
@@ -849,37 +874,42 @@ export default function EditPatient({ params }) {
                       label: "Files",
                     }}
                   />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    disabled={
-                      buttonLabel === "edit patient" ||
-                      buttonLabel === "updated!" ||
-                      buttonLabel === "saving"
-                    }
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    {buttonLabel}
-                  </Button>
+                  {currentUser.value.hospital ===
+                    currentPatientDetails.hospital && (
+                    <div>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        disabled={
+                          buttonLabel === "edit patient" ||
+                          buttonLabel === "updated!" ||
+                          buttonLabel === "saving"
+                        }
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                      >
+                        {buttonLabel}
+                      </Button>
 
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="error"
-                    onClick={() => {
-                      if (
-                        !confirm(
-                          `Are you sure you want to delete ${currentPatientDetails.fullName}`
-                        )
-                      ) {
-                        return;
-                      }
-                      deletePatient();
-                    }}
-                  >
-                    {deleteLabel}
-                  </Button>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        color="error"
+                        onClick={() => {
+                          if (
+                            !confirm(
+                              `Are you sure you want to delete ${currentPatientDetails.fullName}`
+                            )
+                          ) {
+                            return;
+                          }
+                          deletePatient();
+                        }}
+                      >
+                        {deleteLabel}
+                      </Button>
+                    </div>
+                  )}
                 </Box>
               </Box>
             </Container>

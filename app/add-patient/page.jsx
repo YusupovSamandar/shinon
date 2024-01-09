@@ -22,6 +22,7 @@ import { API_URL } from "../apiConfig";
 import { CheckUserRole } from "../routerGuard";
 import SectionTitle from "../components/section-title";
 import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
@@ -66,6 +67,13 @@ function UploadButtons({ receivedImg, setReceivedImg, customID, acceptFiles }) {
 const defaultTheme = createTheme();
 
 export default function AddPatient() {
+  const [hospitalsList, setHospitalsList] = React.useState([]); // patient
+  React.useEffect(() => {
+    (async function () {
+      const { data } = await axios.get(`${API_URL}/api/hospitals`);
+      setHospitalsList(data);
+    })();
+  }, []);
   const router = useRouter();
   const date = new Date();
   const year = date.getFullYear();
@@ -340,20 +348,30 @@ export default function AddPatient() {
                   label="Patient's Country"
                   name="country"
                 />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  value={patientDetails.hospital}
-                  onChange={(e) => {
-                    setPatientDetails((prev) => {
-                      return { ...prev, hospital: e.target.value };
-                    });
-                  }}
-                  id="hospital"
-                  label="Patient's Hospital"
-                  name="hospital"
-                />
+                <FormControl fullWidth>
+                  <InputLabel id="hospital-name-label">
+                    Patient&apos;s Hospital
+                  </InputLabel>
+                  <Select
+                    labelId="hospital-name-label"
+                    id="hospital-name"
+                    value={patientDetails.hospital}
+                    fullWidth
+                    required
+                    label="Patient's Hospital"
+                    onChange={(e) => {
+                      setPatientDetails((prev) => {
+                        return { ...prev, hospital: e.target.value };
+                      });
+                    }}
+                  >
+                    {hospitalsList.map((hosp) => (
+                      <MenuItem key={hosp} value={hosp.hospitalName}>
+                        {hosp.hospitalName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   margin="normal"
                   required

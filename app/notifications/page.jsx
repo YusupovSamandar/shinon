@@ -32,15 +32,19 @@ export default function Notifications() {
     const [currentChips, setCurrentChip] = useState(0);
     const [currentNotifications, setCurrentNotifications] = useState([]);
     const router = useRouter();
+  const currentUser = useSelector((state) => state.userAuth);
     const warningMsgs = useSelector((state) => state.warningMessagesList.value);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(fetchPatients());
+        if (currentUser.isAuth) {
+            dispatch(fetchPatients(currentUser.value.hospital));
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     useEffect(() => {
         const nextDt = currentChips === 0 ? warningMsgs : []
         setCurrentNotifications(nextDt);
+        console.log(warningMsgs)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentChips, warningMsgs]);
     const Alert = React.forwardRef(function Alert(props, ref) {

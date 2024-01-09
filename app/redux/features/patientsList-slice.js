@@ -32,8 +32,8 @@ export const patientsList = createSlice({
 
 
 
-export const fetchPatients = () => async (dispatch) => {
-    const { data } = await axios.get(`${API_URL}/api/patients`);
+export const fetchPatients = (hsp) => async (dispatch) => {
+    const { data } = await axios.get(`${API_URL}/api/patients/${hsp}`);
     allPTS = data
     dispatch(patientsList.actions.updatePatientsList(data));
     dispatch(updateWarningMSGState(data));

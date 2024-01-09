@@ -91,7 +91,7 @@ const UpdatesOnPatient = ({ patientUpdates, setPatientUpdates, patientID }) => {
     )
 }
 
-const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRole }) => {
+const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRole, hspMatch }) => {
 
     const [analysisTests, setAnalysisTests] = useState(allPatientAnalysis);
     const [saving, setSaving] = useState('Save Changes');
@@ -143,7 +143,8 @@ const PatientAnalysis = ({ allPatientAnalysis, ptId, chagePatientDT, currUserRol
                 }}
             />
             <br />
-            {displayForUser(['admin', 'interpreter', 'developer'], currUserRole) && <div style={{ textAlign: "right" }}>
+            {displayForUser(['admin', 'interpreter', 'developer'], currUserRole) &&
+                hspMatch && <div style={{ textAlign: "right" }}>
                 <Button onClick={handleSave} disabled={saving === "saving..."} color={saving === 'Saved!!' ? 'success' : 'primary'} variant="contained">{saving}</Button>
             </div>}
 
@@ -165,7 +166,7 @@ export default function CurrentPatient({ params }) {
         const endOfDay = new Date(thisDate);
         endOfDay.setHours(23, 59, 59, 999);
         (async function () {
-            const { data } = await axios.get(`${API_URL}/api/patients/${patientID}`);
+            const { data } = await axios.get(`${API_URL}/api/patients/one/${patientID}`);
             const { data: thisPatientUpdate } = await axios.post(`${API_URL}/api/updates/initial/${patientID}`, {
                 myStartDate: startOfDay,
                 myEndDate: endOfDay
@@ -176,71 +177,149 @@ export default function CurrentPatient({ params }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
-        <div>
-            <CheckUserRole allowedRoles={['developer', 'viewer', 'admin', 'interpreter']}>
-                {
-                    patientDetails ? <div>
-                        <div style={{ marginLeft: '16px' }}>
-                            <br />
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between' }}>
-                                <IconButton
-                                    onClick={() => router.back()}
-                                    style={{ position: 'relative', right: '10px' }}
-                                    aria-label="delete"
-                                    size="large"
-                                >
-                                    <ArrowBackIcon fontSize="inherit" />
-                                </IconButton>
-                                <div style={{ display: "flex", alignItems: "center", gap: '10px' }}>
-                                    <Avatar sx={{ width: 50, height: 50 }} alt={patientDetails.fullName} src={`${patientDetails.patientPictureURL}`} />
-                                    <Typography component="div">
-                                        {patientDetails.fullName}
-                                    </Typography>
-                                </div>
+      <div>
+        <CheckUserRole
+          allowedRoles={["developer", "viewer", "admin", "interpreter"]}
+        >
+          {patientDetails ? (
+            <div>
+              <div style={{ marginLeft: "16px" }}>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <IconButton
+                    onClick={() => router.back()}
+                    style={{ position: "relative", right: "10px" }}
+                    aria-label="delete"
+                    size="large"
+                  >
+                    <ArrowBackIcon fontSize="inherit" />
+                  </IconButton>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <Avatar
+                      sx={{ width: 50, height: 50 }}
+                      alt={patientDetails.fullName}
+                      src={`${patientDetails.patientPictureURL}`}
+                    />
+                    <Typography component="div">
+                      {patientDetails.fullName}
+                    </Typography>
+                  </div>
 
-                                <Link href={`/patient/edit/${patientID}`} style={{ pointerEvents: displayForUser(['admin', 'developer'], currentUser?.value?.role) ? 'auto' : 'none' }}>
-                                    <IconButton style={{ position: 'relative', right: '10px', paddingLeft: "30px" }} aria-label="delete" size="large">
-                                        <ManageAccountsIcon fontSize="inherit" />
-                                    </IconButton>
-                                </Link>
-                            </div>
-                            <br />
-                            <PatientStepper activeStepNumber={patientDetails.currentStatus} />
-                            {/* <br /> */}
-                            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                <Typography sx={{ fontSize: 15, marginTop: "10px" }} color="text.secondary">
-                                    Status: <b>{patientDetails.currentStatus}</b>
-                                </Typography>
-                                <Typography sx={{ fontSize: 15, marginTop: "10px", marginRight: "16px" }} color="text.secondary">
-                                    UHID: <b>{patientDetails.patientUHID}</b>
-                                </Typography>
-                            </div>
-                            <br />
-                        </div>
-                        <Divider />
-                        <Tabs
-                            config={{
-                                content1: {
-                                    label: "Updates", value: <UpdatesOnPatient patientUpdates={patientUpdates} setPatientUpdates={setPatientUpdates} patientID={patientID} />
-                                },
-                                content2: { label: "Analysis", value: <PatientAnalysis currUserRole={currentUser?.value?.role} allPatientAnalysis={patientDetails.patientProgress} ptId={patientID} chagePatientDT={setPatientDetails} /> },
-                            }}
-                            setCurrentTab={setCurrentTab}
-                            currentTab={currentTab}
-                        />
+                  <Link
+                    href={`/patient/edit/${patientID}`}
+                    style={{
+                      pointerEvents: displayForUser(
+                        ["admin", "developer"],
+                        currentUser?.value?.role
+                      )
+                        ? "auto"
+                        : "none",
+                    }}
+                  >
+                    <IconButton
+                      style={{
+                        position: "relative",
+                        right: "10px",
+                        paddingLeft: "30px",
+                      }}
+                      aria-label="delete"
+                      size="large"
+                    >
+                      <ManageAccountsIcon fontSize="inherit" />
+                    </IconButton>
+                  </Link>
+                </div>
+                <br />
+                <PatientStepper
+                  activeStepNumber={patientDetails.currentStatus}
+                />
+                {/* <br /> */}
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <Typography
+                    sx={{ fontSize: 15, marginTop: "10px" }}
+                    color="text.secondary"
+                  >
+                    Status: <b>{patientDetails.currentStatus}</b>
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: 15,
+                      marginTop: "10px",
+                      marginRight: "16px",
+                    }}
+                    color="text.secondary"
+                  >
+                    UHID: <b>{patientDetails.patientUHID}</b>
+                  </Typography>
+                </div>
+                <br />
+              </div>
+              <Divider />
+              <Tabs
+                config={{
+                  content1: {
+                    label: "Updates",
+                    value: (
+                      <UpdatesOnPatient
+                        patientUpdates={patientUpdates}
+                        setPatientUpdates={setPatientUpdates}
+                        patientID={patientID}
+                      />
+                    ),
+                  },
+                  content2: {
+                    label: "Analysis",
+                    value: (
+                      <PatientAnalysis
+                        currUserRole={currentUser?.value?.role}
+                        hspMatch={currentUser.value.hospital === patientDetails.hospital}
+                        allPatientAnalysis={patientDetails.patientProgress}
+                        ptId={patientID}
+                        chagePatientDT={setPatientDetails}
+                      />
+                    ),
+                  },
+                }}
+                setCurrentTab={setCurrentTab}
+                currentTab={currentTab}
+              />
 
-                        <Typography style={{ minHeight: "44px" }} variant="h5" gutterBottom component="div" sx={{ p: 2, pb: 0 }}>
-                        </Typography>
-                        {displayForUser(['admin', 'interpreter', 'developer'], currentUser?.value?.role) && <MgsBar updatePatientUpdates={setPatientUpdates} updatingPatientId={patientID} />}
-
-
-                    </div>
-                        :
-                        <div></div>
-                }
-
-            </CheckUserRole>
-        </div>
-
-    )
+              <Typography
+                style={{ minHeight: "44px" }}
+                variant="h5"
+                gutterBottom
+                component="div"
+                sx={{ p: 2, pb: 0 }}
+              ></Typography>
+              {displayForUser(
+                ["admin", "interpreter", "developer"],
+                currentUser?.value?.role
+              ) &&
+                currentUser.value.hospital === patientDetails.hospital && (
+                  <MgsBar
+                    updatePatientUpdates={setPatientUpdates}
+                    updatingPatientId={patientID}
+                  />
+                )}
+            </div>
+          ) : (
+            <div></div>
+          )}
+        </CheckUserRole>
+      </div>
+    );
 }
