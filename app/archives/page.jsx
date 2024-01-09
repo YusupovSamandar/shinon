@@ -21,7 +21,9 @@ export default function Patients() {
     useEffect(() => {
       dispatch(setValue(""));
        (async function () {
-         const { data } = await axios.get(`${API_URL}/api/patients/complete`);
+         const { data } = await axios.get(
+           `${API_URL}/api/patients/complete/all`
+         );
          setCompletePatients(data);
        })();
       // eslint-disable-next-line react-hooks/exhaustive-deps
