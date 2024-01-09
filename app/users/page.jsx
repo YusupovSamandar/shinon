@@ -44,9 +44,9 @@ export default function Users() {
         accessorKey: "hospital",
         header: "Hospital Name",
         editVariant: "select",
-        editSelectOptions: hospitalsList.length > 0 && hospitalsList.map(
+        editSelectOptions: hospitalsList.length > 0 ? hospitalsList.map(
           (hsp) => hsp.hospitalName
-        ),
+        ) : [],
       },
     ];
     return (
